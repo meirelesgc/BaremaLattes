@@ -450,6 +450,32 @@ def calculate_guidance_score(researchers: pd.DataFrame):
     return researchers.drop(columns=["count"])
 
 
+def extract_lattes_id(lattes_url: str) -> str | None:
+    if not isinstance(lattes_url, str):
+        return None
+
+    try:
+        lattes_id = lattes_url.strip().split("/")[-1]
+        return lattes_id if lattes_id.isnumeric() else None
+    except (IndexError, AttributeError):
+        return None
+
+
+def registration_number(researchers: pd.DataFrame):
+    csv = pd.read_csv("storage/csv/dmdc.csv")
+    csv["lattes_id"] = csv["LATTES"].apply(extract_lattes_id)
+    csv["n_inscrição"] = csv["INSCRIÇÃO"].astype(str)
+    csv = csv[["n_inscrição", "lattes_id", "INSCRIÇÃO"]]
+
+    researchers = pd.merge(
+        csv,
+        researchers,
+        on="lattes_id",
+        how="left",
+    )
+    return researchers.drop(columns=["name", "INSCRIÇÃO"])
+
+
 def main():
     researchers = get_researchers()
 
@@ -484,7 +510,9 @@ def main():
 
     researchers = calculate_guidance_score(researchers)
 
-    print(researchers)
+    print("Concluido")
+
+    researchers = registration_number(researchers)
 
     researchers.to_excel("score.xlsx")
 
