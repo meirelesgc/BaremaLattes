@@ -116,8 +116,6 @@ def get_researcher_list() -> List[str]:
 
 
 def run_download_process():
-    print("Baixando curriculos... (Verifique 'logs/download.log' para detalhes)")
-
     logger.info("--- INICIANDO PROCESSO DE DOWNLOAD ---")
     RAW_DATA_PATH.mkdir(parents=True, exist_ok=True)
 
