@@ -1,7 +1,15 @@
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import ForeignKey, Integer, String, Text, UniqueConstraint, text
+from sqlalchemy import (
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, registry
 
@@ -169,3 +177,89 @@ class ResearchLines:
         String, default=None
     )
     predominant_area: Mapped[Optional[str]] = mapped_column(String, default=None)
+
+
+@table_registry.mapped_as_dataclass
+class Institution:
+    __tablename__ = 'institution'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    name: Mapped[str] = mapped_column(String, unique=True)
+    acronym: Mapped[Optional[str]] = mapped_column(
+        String, unique=True, default=None
+    )
+    description: Mapped[Optional[str]] = mapped_column(String, default=None)
+    lattes_id: Mapped[Optional[str]] = mapped_column(String, default=None)
+    cnpj: Mapped[Optional[str]] = mapped_column(
+        String, unique=True, default=None
+    )
+    image: Mapped[Optional[str]] = mapped_column(String, default=None)
+    latitude: Mapped[Optional[float]] = mapped_column(Float, default=None)
+    longitude: Mapped[Optional[float]] = mapped_column(Float, default=None)
+
+
+@table_registry.mapped_as_dataclass
+class GreatAreaExpertise:
+    __tablename__ = 'great_area_expertise'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    name: Mapped[str] = mapped_column(String)
+
+
+@table_registry.mapped_as_dataclass
+class AreaExpertise:
+    __tablename__ = 'area_expertise'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    name: Mapped[str] = mapped_column(String)
+    great_area_expertise_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('great_area_expertise.id'),
+        default=None,
+    )
+
+
+@table_registry.mapped_as_dataclass
+class SubAreaExpertise:
+    __tablename__ = 'sub_area_expertise'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    name: Mapped[str] = mapped_column(String)
+    area_expertise_id: Mapped[UUID] = mapped_column(
+        ForeignKey('area_expertise.id')
+    )
+
+
+@table_registry.mapped_as_dataclass
+class AreaSpecialty:
+    __tablename__ = 'area_specialty'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    name: Mapped[str] = mapped_column(String)
+    sub_area_expertise_id: Mapped[UUID] = mapped_column(
+        ForeignKey('sub_area_expertise.id')
+    )

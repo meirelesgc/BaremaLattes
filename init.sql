@@ -55,24 +55,24 @@ CREATE SCHEMA IF NOT EXISTS logs;
 --     CONSTRAINT "FKCountryCity" FOREIGN KEY (country_id) REFERENCES public.country (id) ON UPDATE CASCADE ON DELETE CASCADE,
 --     CONSTRAINT "FKStateCity" FOREIGN KEY (state_id) REFERENCES public.state (id) ON UPDATE CASCADE ON DELETE CASCADE
 -- );
-CREATE TABLE IF NOT EXISTS public.institution (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    name character varying NOT NULL,
-    acronym character varying(50),
-    description character varying(5000),
-    lattes_id character(12),
-    cnpj character(14),
-    image character varying,
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    latitude double precision,
-    longitude double precision,
-    CONSTRAINT "PK_f60ee4ff0719b7df54830b39087" PRIMARY KEY (id),
-    CONSTRAINT "UQ_c50c675ba2bedbaff7192b0a30e" UNIQUE (acronym),
-    CONSTRAINT "UQ_c9af99711dccbeb22b20b24cca8" UNIQUE (cnpj),
-    CONSTRAINT "UQ_d218ad3566afa9e396f184fd7d5" UNIQUE (name)
-);
+-- CREATE TABLE IF NOT EXISTS public.institution (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     name character varying NOT NULL,
+--     acronym character varying(50),
+--     description character varying(5000),
+--     lattes_id character(12),
+--     cnpj character(14),
+--     image character varying,
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     latitude double precision,
+--     longitude double precision,
+--     CONSTRAINT "PK_f60ee4ff0719b7df54830b39087" PRIMARY KEY (id),
+--     CONSTRAINT "UQ_c50c675ba2bedbaff7192b0a30e" UNIQUE (acronym),
+--     CONSTRAINT "UQ_c9af99711dccbeb22b20b24cca8" UNIQUE (cnpj),
+--     CONSTRAINT "UQ_d218ad3566afa9e396f184fd7d5" UNIQUE (name)
+-- );
 -- CREATE TABLE IF NOT EXISTS public.periodical_magazine (
 --     id uuid NOT NULL DEFAULT uuid_generate_v4(),
 --     name character varying(600),
