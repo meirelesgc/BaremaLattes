@@ -385,3 +385,139 @@ class Education:
     key_words: Mapped[Optional[str]] = mapped_column(String, default=None)
     institution: Mapped[Optional[str]] = mapped_column(String, default=None)
     status: Mapped[Optional[str]] = mapped_column(String, default=None)
+
+
+@table_registry.mapped_as_dataclass
+class BibliographicProduction:
+    __tablename__ = 'bibliographic_production'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    title: Mapped[str] = mapped_column(String)
+    type: Mapped[str] = mapped_column(String)
+    title_en: Mapped[Optional[str]] = mapped_column(String, default=None)
+    doi: Mapped[Optional[str]] = mapped_column(String, default=None)
+    nature: Mapped[Optional[str]] = mapped_column(String, default=None)
+    year: Mapped[Optional[str]] = mapped_column(String, default=None)
+    country_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('country.id'), default=None
+    )
+    language: Mapped[Optional[str]] = mapped_column(String, default=None)
+    means_divulgation: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    homepage: Mapped[Optional[str]] = mapped_column(String, default=None)
+    relevance: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('false'), default=False
+    )
+    has_image: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('false'), default=False
+    )
+    scientific_divulgation: Mapped[Optional[bool]] = mapped_column(
+        Boolean, default=False
+    )
+    researcher_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('researcher.id'), default=None
+    )
+    authors: Mapped[Optional[str]] = mapped_column(String, default=None)
+    year_: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    is_new: Mapped[Optional[bool]] = mapped_column(Boolean, default=True)
+
+
+@table_registry.mapped_as_dataclass
+class BibliographicProductionArticle:
+    __tablename__ = 'bibliographic_production_article'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    bibliographic_production_id: Mapped[UUID] = mapped_column(
+        ForeignKey('bibliographic_production.id')
+    )
+    periodical_magazine_id: Mapped[UUID] = mapped_column(
+        ForeignKey('periodical_magazine.id')
+    )
+    volume: Mapped[Optional[str]] = mapped_column(String, default=None)
+    fascicle: Mapped[Optional[str]] = mapped_column(String, default=None)
+    series: Mapped[Optional[str]] = mapped_column(String, default=None)
+    start_page: Mapped[Optional[str]] = mapped_column(String, default=None)
+    end_page: Mapped[Optional[str]] = mapped_column(String, default=None)
+    place_publication: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    periodical_magazine_name: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    issn: Mapped[Optional[str]] = mapped_column(String, default=None)
+    qualis: Mapped[Optional[str]] = mapped_column(String, default='SQ')
+    jcr: Mapped[Optional[str]] = mapped_column(String, default=None)
+    jcr_link: Mapped[Optional[str]] = mapped_column(String, default=None)
+    stars: Mapped[Optional[int]] = mapped_column(Integer, default=0)
+
+
+@table_registry.mapped_as_dataclass
+class BibliographicProductionBook:
+    __tablename__ = 'bibliographic_production_book'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    bibliographic_production_id: Mapped[UUID] = mapped_column(
+        ForeignKey('bibliographic_production.id')
+    )
+    isbn: Mapped[Optional[str]] = mapped_column(String, default=None)
+    qtt_volume: Mapped[Optional[str]] = mapped_column(String, default=None)
+    qtt_pages: Mapped[Optional[str]] = mapped_column(String, default=None)
+    num_edition_revision: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    num_series: Mapped[Optional[str]] = mapped_column(String, default=None)
+    publishing_company: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    publishing_company_city: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    stars: Mapped[Optional[int]] = mapped_column(Integer, default=0)
+
+
+@table_registry.mapped_as_dataclass
+class BibliographicProductionBookChapter:
+    __tablename__ = 'bibliographic_production_book_chapter'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    bibliographic_production_id: Mapped[UUID] = mapped_column(
+        ForeignKey('bibliographic_production.id')
+    )
+    book_title: Mapped[Optional[str]] = mapped_column(String, default=None)
+    isbn: Mapped[Optional[str]] = mapped_column(String, default=None)
+    start_page: Mapped[Optional[str]] = mapped_column(String, default=None)
+    end_page: Mapped[Optional[str]] = mapped_column(String, default=None)
+    qtt_volume: Mapped[Optional[str]] = mapped_column(String, default=None)
+    organizers: Mapped[Optional[str]] = mapped_column(String, default=None)
+    num_edition_revision: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    num_series: Mapped[Optional[str]] = mapped_column(String, default=None)
+    publishing_company: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    publishing_company_city: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    stars: Mapped[Optional[int]] = mapped_column(Integer, default=0)
