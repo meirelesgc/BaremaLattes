@@ -707,18 +707,18 @@ CREATE TABLE IF NOT EXISTS public.foment (
     aid_quantity integer,
     scholarship_quantity integer
 );
-CREATE TABLE education (
-    id UUID NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id UUID NOT NULL,
-    degree VARCHAR(255) NOT NULL,
-    education_name VARCHAR(255),
-    education_start INTEGER,
-    education_end INTEGER,
-    key_words VARCHAR(255),
-    institution VARCHAR(255),
-    CONSTRAINT pk_education PRIMARY KEY (id),
-    CONSTRAINT fk_researcher_education FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE  CASCADE ON DELETE CASCADE
-);
+-- CREATE TABLE education (
+--     id UUID NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id UUID NOT NULL,
+--     degree VARCHAR(255) NOT NULL,
+--     education_name VARCHAR(255),
+--     education_start INTEGER,
+--     education_end INTEGER,
+--     key_words VARCHAR(255),
+--     institution VARCHAR(255),
+--     CONSTRAINT pk_education PRIMARY KEY (id),
+--     CONSTRAINT fk_researcher_education FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE  CASCADE ON DELETE CASCADE
+-- );
 CREATE TABLE IF NOT EXISTS public.openalex_article (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     article_id uuid NOT NULL,

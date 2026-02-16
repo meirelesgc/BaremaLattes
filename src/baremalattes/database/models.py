@@ -339,3 +339,48 @@ class ResearcherAddress:
     telephone: Mapped[Optional[str]] = mapped_column(String, default=None)
     country: Mapped[Optional[str]] = mapped_column(String, default=None)
     uf: Mapped[Optional[str]] = mapped_column(String, default=None)
+
+
+@table_registry.mapped_as_dataclass
+class ResearcherAreaExpertise:
+    __tablename__ = 'researcher_area_expertise'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    researcher_id: Mapped[UUID] = mapped_column(ForeignKey('researcher.id'))
+    sub_area_expertise_id: Mapped[UUID] = mapped_column(
+        ForeignKey('sub_area_expertise.id')
+    )
+    order: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    area_expertise_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('area_expertise.id'), default=None
+    )
+    great_area_expertise_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('great_area_expertise.id'), default=None
+    )
+    area_specialty_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('area_specialty.id'), default=None
+    )
+
+
+@table_registry.mapped_as_dataclass
+class Education:
+    __tablename__ = 'education'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    researcher_id: Mapped[UUID] = mapped_column(ForeignKey('researcher.id'))
+    degree: Mapped[str] = mapped_column(String)
+    education_name: Mapped[Optional[str]] = mapped_column(String, default=None)
+    education_start: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    education_end: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    key_words: Mapped[Optional[str]] = mapped_column(String, default=None)
+    institution: Mapped[Optional[str]] = mapped_column(String, default=None)
