@@ -399,55 +399,55 @@ CREATE TABLE IF NOT EXISTS public.advisory_activity (
         REFERENCES public.researcher (id) MATCH SIMPLE 
         ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS public.software (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    title character varying,
-    platform character varying,
-    goal character varying,
-    relevance boolean NOT NULL DEFAULT false,
-    has_image boolean NOT NULL DEFAULT false,
-    environment character varying,
-    availability character varying,
-    financing_institutionc character varying,
-    researcher_id uuid,
-    year smallint,
-    is_new boolean DEFAULT true,
-    stars INTEGER DEFAULT 0,
-    CONSTRAINT software_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS public.patent (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    title character varying(400),
-    category character varying(200),
-    relevance boolean NOT NULL DEFAULT false,
-    has_image boolean NOT NULL DEFAULT false,
-    development_year character varying(10),
-    details TEXT,
-    researcher_id uuid,
-    code VARCHAR UNIQUE,
-    grant_date timestamp without time zone,
-    deposit_date character varying(255),
-    is_new boolean DEFAULT true,
-    stars INTEGER DEFAULT 0,
-    CONSTRAINT patent_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS public.research_report (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    researcher_id uuid,
-    title character varying(400),
-    project_name character varying(255),
-    financing_institutionc character varying(255),
-    year smallint,
-    is_new boolean DEFAULT true,
-    stars INTEGER DEFAULT 0,
-    CONSTRAINT research_report_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
-);
+-- CREATE TABLE IF NOT EXISTS public.software (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     title character varying,
+--     platform character varying,
+--     goal character varying,
+--     relevance boolean NOT NULL DEFAULT false,
+--     has_image boolean NOT NULL DEFAULT false,
+--     environment character varying,
+--     availability character varying,
+--     financing_institutionc character varying,
+--     researcher_id uuid,
+--     year smallint,
+--     is_new boolean DEFAULT true,
+--     stars INTEGER DEFAULT 0,
+--     CONSTRAINT software_pkey PRIMARY KEY (id),
+--     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+-- -- );
+-- CREATE TABLE IF NOT EXISTS public.patent (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     title character varying(400),
+--     category character varying(200),
+--     relevance boolean NOT NULL DEFAULT false,
+--     has_image boolean NOT NULL DEFAULT false,
+--     development_year character varying(10),
+--     details TEXT,
+--     researcher_id uuid,
+--     code VARCHAR UNIQUE,
+--     grant_date timestamp without time zone,
+--     deposit_date character varying(255),
+--     is_new boolean DEFAULT true,
+--     stars INTEGER DEFAULT 0,
+--     CONSTRAINT patent_pkey PRIMARY KEY (id),
+--     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+-- );
+-- CREATE TABLE IF NOT EXISTS public.research_report (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     researcher_id uuid,
+--     title character varying(400),
+--     project_name character varying(255),
+--     financing_institutionc character varying(255),
+--     year smallint,
+--     is_new boolean DEFAULT true,
+--     stars INTEGER DEFAULT 0,
+--     CONSTRAINT research_report_pkey PRIMARY KEY (id),
+--     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+-- );
 CREATE TABLE IF NOT EXISTS public.guidance (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     created_at timestamp without time zone NOT NULL DEFAULT now(),
@@ -463,21 +463,21 @@ CREATE TABLE IF NOT EXISTS public.guidance (
     CONSTRAINT guidance_pkey PRIMARY KEY (id),
     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS public.brand (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    title character varying(400),
-    relevance boolean NOT NULL DEFAULT false,
-    has_image boolean NOT NULL DEFAULT false,
-    goal character varying(255),
-    nature character varying(100),
-    researcher_id uuid,
-    year smallint,
-    is_new boolean DEFAULT true,
-    stars INTEGER DEFAULT 0,
-    CONSTRAINT brand_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
-);
+-- CREATE TABLE IF NOT EXISTS public.brand (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     title character varying(400),
+--     relevance boolean NOT NULL DEFAULT false,
+--     has_image boolean NOT NULL DEFAULT false,
+--     goal character varying(255),
+--     nature character varying(100),
+--     researcher_id uuid,
+--     year smallint,
+--     is_new boolean DEFAULT true,
+--     stars INTEGER DEFAULT 0,
+--     CONSTRAINT brand_pkey PRIMARY KEY (id),
+--     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+-- );
 CREATE TABLE IF NOT EXISTS public.participation_events (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     created_at timestamp without time zone NOT NULL DEFAULT now(),

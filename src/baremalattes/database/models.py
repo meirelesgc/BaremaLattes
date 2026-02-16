@@ -521,3 +521,133 @@ class BibliographicProductionBookChapter:
         String, default=None
     )
     stars: Mapped[Optional[int]] = mapped_column(Integer, default=0)
+
+
+@table_registry.mapped_as_dataclass
+class Software:
+    __tablename__ = 'software'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    title: Mapped[Optional[str]] = mapped_column(String, default=None)
+    platform: Mapped[Optional[str]] = mapped_column(String, default=None)
+    goal: Mapped[Optional[str]] = mapped_column(String, default=None)
+    relevance: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('false'), default=False
+    )
+    has_image: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('false'), default=False
+    )
+    environment: Mapped[Optional[str]] = mapped_column(String, default=None)
+    availability: Mapped[Optional[str]] = mapped_column(String, default=None)
+    financing_institutionc: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    researcher_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('researcher.id'), default=None
+    )
+    year: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    is_new: Mapped[Optional[bool]] = mapped_column(
+        Boolean, server_default=text('true'), default=True
+    )
+    stars: Mapped[Optional[int]] = mapped_column(
+        Integer, server_default=text('0'), default=0
+    )
+
+
+@table_registry.mapped_as_dataclass
+class Patent:
+    __tablename__ = 'patent'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    title: Mapped[Optional[str]] = mapped_column(String, default=None)
+    category: Mapped[Optional[str]] = mapped_column(String, default=None)
+    relevance: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('false'), default=False
+    )
+    has_image: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('false'), default=False
+    )
+    development_year: Mapped[Optional[str]] = mapped_column(String, default=None)
+    details: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    researcher_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('researcher.id'), default=None
+    )
+    code: Mapped[Optional[str]] = mapped_column(
+        String, unique=True, default=None
+    )
+    grant_date: Mapped[Optional[datetime]] = mapped_column(default=None)
+    deposit_date: Mapped[Optional[str]] = mapped_column(String, default=None)
+    is_new: Mapped[Optional[bool]] = mapped_column(
+        Boolean, server_default=text('true'), default=True
+    )
+    stars: Mapped[Optional[int]] = mapped_column(
+        Integer, server_default=text('0'), default=0
+    )
+
+
+@table_registry.mapped_as_dataclass
+class ResearchReport:
+    __tablename__ = 'research_report'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    researcher_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('researcher.id'), default=None
+    )
+    title: Mapped[Optional[str]] = mapped_column(String, default=None)
+    project_name: Mapped[Optional[str]] = mapped_column(String, default=None)
+    financing_institutionc: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    year: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    is_new: Mapped[Optional[bool]] = mapped_column(
+        Boolean, server_default=text('true'), default=True
+    )
+    stars: Mapped[Optional[int]] = mapped_column(
+        Integer, server_default=text('0'), default=0
+    )
+
+
+@table_registry.mapped_as_dataclass
+class Brand:
+    __tablename__ = 'brand'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    title: Mapped[Optional[str]] = mapped_column(String, default=None)
+    relevance: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('false'), default=False
+    )
+    has_image: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('false'), default=False
+    )
+    goal: Mapped[Optional[str]] = mapped_column(String, default=None)
+    nature: Mapped[Optional[str]] = mapped_column(String, default=None)
+    researcher_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('researcher.id'), default=None
+    )
+    year: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    is_new: Mapped[Optional[bool]] = mapped_column(
+        Boolean, server_default=text('true'), default=True
+    )
+    stars: Mapped[Optional[int]] = mapped_column(
+        Integer, server_default=text('0'), default=0
+    )
