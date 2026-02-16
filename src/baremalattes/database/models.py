@@ -384,3 +384,4 @@ class Education:
     education_end: Mapped[Optional[int]] = mapped_column(Integer, default=None)
     key_words: Mapped[Optional[str]] = mapped_column(String, default=None)
     institution: Mapped[Optional[str]] = mapped_column(String, default=None)
+    status: Mapped[Optional[str]] = mapped_column(String, default=None)
