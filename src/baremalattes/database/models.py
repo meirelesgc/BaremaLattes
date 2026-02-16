@@ -1,10 +1,7 @@
-import enum
-from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import (
-    Boolean,
     Float,
     ForeignKey,
     Integer,
@@ -13,7 +10,6 @@ from sqlalchemy import (
     UniqueConstraint,
     text,
 )
-from sqlalchemy.dialects.postgresql import ENUM as PG_ENUM
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, registry
 
@@ -267,77 +263,3 @@ class AreaSpecialty:
     sub_area_expertise_id: Mapped[UUID] = mapped_column(
         ForeignKey('sub_area_expertise.id')
     )
-
-
-class ClassificationClass(enum.Enum):
-    A_PLUS = 'A+'
-    A = 'A'
-    B_PLUS = 'B+'
-    B = 'B'
-    C_PLUS = 'C+'
-    C = 'C'
-    D_PLUS = 'D+'
-    D = 'D'
-    E_PLUS = 'E+'
-    E = 'E'
-
-
-@table_registry.mapped_as_dataclass
-class Researcher:
-    __tablename__ = 'researcher'
-
-    id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
-        primary_key=True,
-        server_default=text('uuid_generate_v4()'),
-        init=False,
-    )
-    name: Mapped[str] = mapped_column(String)
-    lattes_id: Mapped[Optional[str]] = mapped_column(
-        String, unique=True, default=None
-    )
-    lattes_10_id: Mapped[Optional[str]] = mapped_column(
-        String, unique=True, default=None
-    )
-    last_update: Mapped[datetime] = mapped_column(
-        server_default=text('now()'), init=False
-    )
-    citations: Mapped[Optional[str]] = mapped_column(String, default=None)
-    orcid: Mapped[Optional[str]] = mapped_column(String, default=None)
-    abstract: Mapped[Optional[str]] = mapped_column(Text, default=None)
-    abstract_en: Mapped[Optional[str]] = mapped_column(Text, default=None)
-    abstract_ai: Mapped[Optional[str]] = mapped_column(Text, default=None)
-    other_information: Mapped[Optional[str]] = mapped_column(
-        String, default=None
-    )
-    city_id: Mapped[Optional[UUID]] = mapped_column(
-        ForeignKey('city.id'), default=None
-    )
-    country_id: Mapped[Optional[UUID]] = mapped_column(
-        ForeignKey('country.id'), default=None
-    )
-    classification: Mapped[Optional[ClassificationClass]] = mapped_column(
-        PG_ENUM(
-            ClassificationClass, name='classification_class', create_type=False
-        ),
-        server_default=text("'E'"),
-        default=ClassificationClass.E,
-    )
-    has_image: Mapped[bool] = mapped_column(Boolean, default=False)
-    qtt_publications: Mapped[Optional[int]] = mapped_column(
-        Integer, default=None
-    )
-    institution_id: Mapped[Optional[UUID]] = mapped_column(
-        ForeignKey('institution.id'),
-        default=None,
-    )
-    graduate_program: Mapped[Optional[str]] = mapped_column(String, default=None)
-    graduation: Mapped[Optional[str]] = mapped_column(String, default=None)
-    update_abstract: Mapped[Optional[bool]] = mapped_column(
-        Boolean, default=True
-    )
-    docente: Mapped[bool] = mapped_column(Boolean, default=False)
-    student: Mapped[bool] = mapped_column(Boolean, default=False)
-    extra_field: Mapped[Optional[str]] = mapped_column(String, default=None)
-    status: Mapped[bool] = mapped_column(Boolean, default=True)
-    stars: Mapped[Optional[int]] = mapped_column(Integer, default=0)
