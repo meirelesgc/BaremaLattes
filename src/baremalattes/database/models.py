@@ -1,7 +1,9 @@
+from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import (
+    Boolean,
     Float,
     ForeignKey,
     Integer,
@@ -262,4 +264,52 @@ class AreaSpecialty:
     name: Mapped[str] = mapped_column(String)
     sub_area_expertise_id: Mapped[UUID] = mapped_column(
         ForeignKey('sub_area_expertise.id')
+    )
+
+
+@table_registry.mapped_as_dataclass
+class Researcher:
+    __tablename__ = 'researcher'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    name: Mapped[str] = mapped_column(String)
+    lattes_id: Mapped[Optional[str]] = mapped_column(
+        String, unique=True, default=None
+    )
+    lattes_10_id: Mapped[Optional[str]] = mapped_column(
+        String, unique=True, default=None
+    )
+    last_update: Mapped[datetime] = mapped_column(
+        server_default=text('now()'), init=False
+    )
+    citations: Mapped[Optional[str]] = mapped_column(String, default=None)
+    orcid: Mapped[Optional[str]] = mapped_column(String, default=None)
+    abstract: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    abstract_en: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    abstract_ai: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    other_information: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    city_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('city.id'), default=None
+    )
+    country_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('country.id'), default=None
+    )
+    qtt_publications: Mapped[Optional[int]] = mapped_column(
+        Integer, default=None
+    )
+    institution_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('institution.id'),
+        default=None,
+    )
+    graduate_program: Mapped[Optional[str]] = mapped_column(String, default=None)
+    graduation: Mapped[Optional[str]] = mapped_column(String, default=None)
+    update_abstract: Mapped[Optional[bool]] = mapped_column(
+        Boolean, default=True
     )
