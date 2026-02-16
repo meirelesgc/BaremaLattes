@@ -73,18 +73,18 @@ CREATE TABLE IF NOT EXISTS public.institution (
     CONSTRAINT "UQ_c9af99711dccbeb22b20b24cca8" UNIQUE (cnpj),
     CONSTRAINT "UQ_d218ad3566afa9e396f184fd7d5" UNIQUE (name)
 );
-CREATE TABLE IF NOT EXISTS public.periodical_magazine (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    name character varying(600),
-    issn character varying(20),
-    qualis character varying(8),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    jcr character varying(100),
-    jcr_link character varying(200),
-    CONSTRAINT "PK_35bb0df687d8879d763c1f3ae68" PRIMARY KEY (id)
-);
+-- CREATE TABLE IF NOT EXISTS public.periodical_magazine (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     name character varying(600),
+--     issn character varying(20),
+--     qualis character varying(8),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     jcr character varying(100),
+--     jcr_link character varying(200),
+--     CONSTRAINT "PK_35bb0df687d8879d763c1f3ae68" PRIMARY KEY (id)
+-- );
 CREATE TABLE IF NOT EXISTS public.great_area_expertise (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     name character varying NOT NULL,
@@ -774,25 +774,25 @@ CREATE TABLE public.graduate_program_ind_prod (
     ind_prod_not_granted_patent numeric(10, 3),
     ind_prod_guidance numeric(10, 3)
 );
-CREATE TABLE IF NOT EXISTS research_group (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name character varying(200),
-    institution character varying(200),
-    first_leader character varying(200),
-    first_leader_id uuid,
-    second_leader character varying(200),
-    second_leader_id uuid,
-    area character varying(200),
-    census int,
-    start_of_collection character varying(200),
-    end_of_collection character varying(200),
-    group_identifier character varying(200),
-    year int,
-    institution_name character varying(200),
-    category character varying(200),
-    UNIQUE (name, institution),
-    UNIQUE (group_identifier)
-);
+-- CREATE TABLE IF NOT EXISTS research_group (
+--     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+--     name character varying(200),
+--     institution character varying(200),
+--     first_leader character varying(200),
+--     first_leader_id uuid,
+--     second_leader character varying(200),
+--     second_leader_id uuid,
+--     area character varying(200),
+--     census int,
+--     start_of_collection character varying(200),
+--     end_of_collection character varying(200),
+--     group_identifier character varying(200),
+--     year int,
+--     institution_name character varying(200),
+--     category character varying(200),
+--     UNIQUE (name, institution),
+--     UNIQUE (group_identifier)
+-- );
 CREATE TABLE IF NOT EXISTS research_group_researcher (
       research_group_id uuid NOT NULL,
       researcher_id uuid NOT NULL,
@@ -804,17 +804,17 @@ CREATE TABLE IF NOT EXISTS research_group_researcher (
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP
 );
-CREATE TABLE research_lines(
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    research_group_id uuid,
-    title TEXT,
-    objective TEXT,
-    keyword VARCHAR(510),
-    group_identifier VARCHAR(510),
-    year INT,
-    predominant_major_area VARCHAR(510),
-    predominant_area VARCHAR(510)
-);
+-- CREATE TABLE research_lines(
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     research_group_id uuid,
+--     title TEXT,
+--     objective TEXT,
+--     keyword VARCHAR(510),
+--     group_identifier VARCHAR(510),
+--     year INT,
+--     predominant_major_area VARCHAR(510),
+--     predominant_area VARCHAR(510)
+-- );
 CREATE TABLE research_project (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     researcher_id uuid NOT NULL REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE,
