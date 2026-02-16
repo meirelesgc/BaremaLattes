@@ -313,3 +313,29 @@ class Researcher:
     update_abstract: Mapped[Optional[bool]] = mapped_column(
         Boolean, default=True
     )
+
+
+@table_registry.mapped_as_dataclass
+class ResearcherAddress:
+    __tablename__ = 'researcher_address'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    researcher_id: Mapped[UUID] = mapped_column(ForeignKey('researcher.id'))
+    city: Mapped[Optional[str]] = mapped_column(String, default=None)
+    organ: Mapped[Optional[str]] = mapped_column(String, default=None)
+    unity: Mapped[Optional[str]] = mapped_column(String, default=None)
+    institution: Mapped[Optional[str]] = mapped_column(String, default=None)
+    public_place: Mapped[Optional[str]] = mapped_column(String, default=None)
+    district: Mapped[Optional[str]] = mapped_column(String, default=None)
+    cep: Mapped[Optional[str]] = mapped_column(String, default=None)
+    mailbox: Mapped[Optional[str]] = mapped_column(String, default=None)
+    fax: Mapped[Optional[str]] = mapped_column(String, default=None)
+    url_homepage: Mapped[Optional[str]] = mapped_column(String, default=None)
+    telephone: Mapped[Optional[str]] = mapped_column(String, default=None)
+    country: Mapped[Optional[str]] = mapped_column(String, default=None)
+    uf: Mapped[Optional[str]] = mapped_column(String, default=None)
