@@ -651,3 +651,88 @@ class Brand:
     stars: Mapped[Optional[int]] = mapped_column(
         Integer, server_default=text('0'), default=0
     )
+
+
+@table_registry.mapped_as_dataclass
+class AdvisoryActivity:
+    __tablename__ = 'advisory_activity'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    researcher_id: Mapped[UUID] = mapped_column(ForeignKey('researcher.id'))
+    organ_name: Mapped[str] = mapped_column(String)
+    start_year: Mapped[str] = mapped_column(String)
+    sequence_id: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    organ_code: Mapped[Optional[str]] = mapped_column(String, default=None)
+    unit_code: Mapped[Optional[str]] = mapped_column(String, default=None)
+    unit_name: Mapped[Optional[str]] = mapped_column(String, default=None)
+    specification: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    is_current: Mapped[Optional[str]] = mapped_column(String, default=None)
+    start_month: Mapped[Optional[str]] = mapped_column(String, default=None)
+    end_month: Mapped[Optional[str]] = mapped_column(String, default=None)
+    end_year: Mapped[Optional[str]] = mapped_column(String, default=None)
+
+
+@table_registry.mapped_as_dataclass
+class ArtisticProduction:
+    __tablename__ = 'artistic_production'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    researcher_id: Mapped[UUID] = mapped_column(ForeignKey('researcher.id'))
+    title: Mapped[str] = mapped_column(Text)
+    year: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+
+
+@table_registry.mapped_as_dataclass
+class DidacticMaterial:
+    __tablename__ = 'didactic_material'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    researcher_id: Mapped[UUID] = mapped_column(ForeignKey('researcher.id'))
+    title: Mapped[str] = mapped_column(Text)
+    country: Mapped[Optional[str]] = mapped_column(String, default=None)
+    nature: Mapped[Optional[str]] = mapped_column(String, default=None)
+    description: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    year: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+
+
+@table_registry.mapped_as_dataclass
+class EventOrganization:
+    __tablename__ = 'event_organization'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    title: Mapped[Optional[str]] = mapped_column(String, default=None)
+    promoter_institution: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    nature: Mapped[Optional[str]] = mapped_column(String, default=None)
+    researcher_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('researcher.id'), default=None
+    )
+    local: Mapped[Optional[str]] = mapped_column(String, default=None)
+    duration_in_weeks: Mapped[Optional[int]] = mapped_column(
+        Integer, default=None
+    )
+    year: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    is_new: Mapped[Optional[bool]] = mapped_column(
+        Boolean, server_default=text('true'), default=True
+    )

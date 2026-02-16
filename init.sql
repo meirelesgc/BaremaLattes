@@ -369,36 +369,30 @@ CREATE TABLE IF NOT EXISTS public.other_technical_production (
     CONSTRAINT "PK_other_technical_production_id" PRIMARY KEY (id),
     CONSTRAINT "FK_other_technical_production_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
 );
-CREATE TABLE IF NOT EXISTS public.advisory_activity (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid NOT NULL,
+-- CREATE TABLE IF NOT EXISTS public.advisory_activity (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid NOT NULL,
     
-    -- Dados extraídos do XML
-    sequence_id integer,
-    organ_code character varying(50),
-    organ_name character varying(500) NOT NULL,
-    unit_code character varying(50),
-    unit_name character varying(255),
-    specification text,
+--     -- Dados extraídos do XML
+--     sequence_id integer,
+--     organ_code character varying(50),
+--     organ_name character varying(500) NOT NULL,
+--     unit_code character varying(50),
+--     unit_name character varying(255),
+--     specification text,
     
-    -- Período da atividade
-    is_current VARCHAR,
-    start_month character(2),
-    start_year character(4) NOT NULL,
-    end_month character(2),
-    end_year character(4),
-    
-    -- Timestamps para auditoria (padrão do modelo)
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    
-    -- Constraints
-    CONSTRAINT "PK_advisory_activity" PRIMARY KEY (id),
-    CONSTRAINT "FK_advisory_activity_researcher" FOREIGN KEY (researcher_id) 
-        REFERENCES public.researcher (id) MATCH SIMPLE 
-        ON UPDATE CASCADE ON DELETE CASCADE
-);
+--     -- Período da atividade
+--     is_current VARCHAR,
+--     start_month character(2),
+--     start_year character(4) NOT NULL,
+--     end_month character(2),
+--     end_year character(4),
+--     -- Constraints
+--     CONSTRAINT "PK_advisory_activity" PRIMARY KEY (id),
+--     CONSTRAINT "FK_advisory_activity_researcher" FOREIGN KEY (researcher_id) 
+--         REFERENCES public.researcher (id) MATCH SIMPLE 
+--         ON UPDATE CASCADE ON DELETE CASCADE
+-- );
 -- CREATE TABLE IF NOT EXISTS public.software (
 --     id uuid NOT NULL DEFAULT uuid_generate_v4(),
 --     created_at timestamp without time zone NOT NULL DEFAULT now(),
@@ -493,20 +487,20 @@ CREATE TABLE IF NOT EXISTS public.participation_events (
     CONSTRAINT participation_events_pkey PRIMARY KEY (id),
     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS public.event_organization (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    title character varying(500),
-    promoter_institution character varying(500),
-    nature character varying(30),
-    researcher_id uuid,
-    local character varying(500),
-    duration_in_weeks smallint,
-    year smallint,
-    is_new boolean DEFAULT true,
-    CONSTRAINT event_organization_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
-);
+-- CREATE TABLE IF NOT EXISTS public.event_organization (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     title character varying(500),
+--     promoter_institution character varying(500),
+--     nature character varying(30),
+--     researcher_id uuid,
+--     local character varying(500),
+--     duration_in_weeks smallint,
+--     year smallint,
+--     is_new boolean DEFAULT true,
+--     CONSTRAINT event_organization_pkey PRIMARY KEY (id),
+--     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+-- );
 -- CREATE TABLE IF NOT EXISTS public.bibliographic_production_article (
 --     id uuid NOT NULL DEFAULT uuid_generate_v4(),
 --     bibliographic_production_id uuid NOT NULL,
@@ -971,25 +965,25 @@ CREATE TABLE IF NOT EXISTS public.process_knowledge_area (
         REFERENCES public.process_or_technique (id) MATCH SIMPLE
         ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS public.didactic_material (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    researcher_id uuid NOT NULL,
-    title TEXT NOT NULL,
-    country VARCHAR,
-    nature VARCHAR,
-	description TEXT,
-    year INT,
-    CONSTRAINT fk_researcher
-        FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS public.artistic_production (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    researcher_id uuid NOT NULL,
-    title TEXT NOT NULL,
-    year INT,
-    CONSTRAINT fk_researcher
-        FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
+-- CREATE TABLE IF NOT EXISTS public.didactic_material (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+--     researcher_id uuid NOT NULL,
+--     title TEXT NOT NULL,
+--     country VARCHAR,
+--     nature VARCHAR,
+-- 	description TEXT,
+--     year INT,
+--     CONSTRAINT fk_researcher
+--         FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
+-- );
+-- CREATE TABLE IF NOT EXISTS public.artistic_production (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+--     researcher_id uuid NOT NULL,
+--     title TEXT NOT NULL,
+--     year INT,
+--     CONSTRAINT fk_researcher
+--         FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
+-- );
 CREATE TABLE IF NOT EXISTS public.relevant_production (
     researcher_id uuid NOT NULL,
     production_id uuid NOT NULL,
