@@ -225,151 +225,151 @@ CREATE TABLE IF NOT EXISTS public.area_specialty (
 --     CONSTRAINT "FKCountryResearcher" FOREIGN KEY (country_id) REFERENCES public.country (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
 --     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
 -- );
-CREATE TABLE IF NOT EXISTS public.mockup (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid,
-    production_sequence integer, 
-    title character varying(500) NOT NULL,
-    title_en character varying(500),
-    year character(4),
-    country character varying(100),
-    language character varying(50),
-    dissemination_medium character varying(50), 
-    homepage character varying(500),
-    doi character varying(100),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    CONSTRAINT "PK_mockup_basic_data_id" PRIMARY KEY (id),
-    CONSTRAINT "FK_mockup_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
-);
-CREATE TABLE IF NOT EXISTS public.publishing (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid,
-    production_sequence integer, 
-    title character varying(500) NOT NULL,
-    title_en character varying(500),
-    year character(4),
-    country character varying(100),
-    language character varying(50),
-    dissemination_medium character varying(50), 
-    homepage character varying(500),
-    doi character varying(100),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    CONSTRAINT "PK_publishing_id" PRIMARY KEY (id),
-    CONSTRAINT "FK_publishing_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
-);
-CREATE TABLE IF NOT EXISTS public.industrial_design (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid,
-    production_sequence integer, 
-    title character varying(500) NOT NULL,
-    title_en character varying(500),
-    year character(4),
-    country character varying(100),
-    language character varying(50),
-    dissemination_medium character varying(50), 
-    homepage character varying(500),
-    doi character varying(100),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    CONSTRAINT "PK_industrial_design_id" PRIMARY KEY (id),
-    CONSTRAINT "FK_industrial_design_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
-);
-CREATE TABLE IF NOT EXISTS public.maintenance_artistic_work (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid,
-    production_sequence integer, 
-    title character varying(500) NOT NULL,
-    title_en character varying(500),
-    year character(4),
-    country character varying(100),
-    language character varying(50),
-    dissemination_medium character varying(50), 
-    homepage character varying(500),
-    doi character varying(100),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    CONSTRAINT "PK_maintenance_artistic_work_id" PRIMARY KEY (id),
-    CONSTRAINT "FK_maintenance_artistic_work_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
-);
-CREATE TABLE IF NOT EXISTS public.letter_map_or_similar (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid,
-    production_sequence integer, 
-    title character varying(500) NOT NULL,
-    title_en character varying(500),
-    year character(4),
-    country character varying(100),
-    language character varying(50),
-    dissemination_medium character varying(50), 
-    homepage character varying(500),
-    doi character varying(100),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    CONSTRAINT "PK_letter_map_or_similar_id" PRIMARY KEY (id),
-    CONSTRAINT "FK_letter_map_or_similar_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
-);
-CREATE TABLE IF NOT EXISTS public.short_course (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid,
-    production_sequence integer, 
-    title character varying(500) NOT NULL,
-    title_en character varying(500),
-    year character(4),
-    country character varying(100),
-    language character varying(50),
-    dissemination_medium character varying(50), 
-    homepage character varying(500),
-    doi character varying(100),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    CONSTRAINT "PK_short_course_id" PRIMARY KEY (id),
-    CONSTRAINT "FK_short_course_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
-);
-CREATE TABLE IF NOT EXISTS public.social_media_website_blog (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid,
-    production_sequence integer, 
-    title character varying(500) NOT NULL,
-    title_en character varying(500),
-    year character(4),
-    country character varying(100),
-    language character varying(50),
-    dissemination_medium character varying(50), 
-    homepage character varying(500),
-    doi character varying(100),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    CONSTRAINT "PK_social_media_website_blog_id" PRIMARY KEY (id),
-    CONSTRAINT "FK_social_media_website_blog_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
-);
-CREATE TABLE IF NOT EXISTS public.other_technical_production (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid,
-    production_sequence integer, 
-    title character varying(500) NOT NULL,
-    title_en character varying(500),
-    year character(4),
-    country character varying(100),
-    language character varying(50),
-    dissemination_medium character varying(50), 
-    homepage character varying(500),
-    doi character varying(100),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    CONSTRAINT "PK_other_technical_production_id" PRIMARY KEY (id),
-    CONSTRAINT "FK_other_technical_production_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
-);
--- CREATE TABLE IF NOT EXISTS public.advisory_activity (
+-- CREATE TABLE IF NOT EXISTS public.mockup (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid,
+--     production_sequence integer, 
+--     title character varying(500) NOT NULL,
+--     title_en character varying(500),
+--     year character(4),
+--     country character varying(100),
+--     language character varying(50),
+--     dissemination_medium character varying(50), 
+--     homepage character varying(500),
+--     doi character varying(100),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     CONSTRAINT "PK_mockup_basic_data_id" PRIMARY KEY (id),
+--     CONSTRAINT "FK_mockup_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
+-- );
+
+-- -- CREATE TABLE IF NOT EXISTS public.advisory_activity (CREATE TABLE IF NOT EXISTS public.publishing (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid,
+--     production_sequence integer, 
+--     title character varying(500) NOT NULL,
+--     title_en character varying(500),
+--     year character(4),
+--     country character varying(100),
+--     language character varying(50),
+--     dissemination_medium character varying(50), 
+--     homepage character varying(500),
+--     doi character varying(100),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     CONSTRAINT "PK_publishing_id" PRIMARY KEY (id),
+--     CONSTRAINT "FK_publishing_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
+-- );
+-- CREATE TABLE IF NOT EXISTS public.industrial_design (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid,
+--     production_sequence integer, 
+--     title character varying(500) NOT NULL,
+--     title_en character varying(500),
+--     year character(4),
+--     country character varying(100),
+--     language character varying(50),
+--     dissemination_medium character varying(50), 
+--     homepage character varying(500),
+--     doi character varying(100),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     CONSTRAINT "PK_industrial_design_id" PRIMARY KEY (id),
+--     CONSTRAINT "FK_industrial_design_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
+-- );
+-- CREATE TABLE IF NOT EXISTS public.maintenance_artistic_work (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid,
+--     production_sequence integer, 
+--     title character varying(500) NOT NULL,
+--     title_en character varying(500),
+--     year character(4),
+--     country character varying(100),
+--     language character varying(50),
+--     dissemination_medium character varying(50), 
+--     homepage character varying(500),
+--     doi character varying(100),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     CONSTRAINT "PK_maintenance_artistic_work_id" PRIMARY KEY (id),
+--     CONSTRAINT "FK_maintenance_artistic_work_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
+-- );
+-- CREATE TABLE IF NOT EXISTS public.letter_map_or_similar (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid,
+--     production_sequence integer, 
+--     title character varying(500) NOT NULL,
+--     title_en character varying(500),
+--     year character(4),
+--     country character varying(100),
+--     language character varying(50),
+--     dissemination_medium character varying(50), 
+--     homepage character varying(500),
+--     doi character varying(100),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     CONSTRAINT "PK_letter_map_or_similar_id" PRIMARY KEY (id),
+--     CONSTRAINT "FK_letter_map_or_similar_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
+-- );
+-- CREATE TABLE IF NOT EXISTS public.short_course (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid,
+--     production_sequence integer, 
+--     title character varying(500) NOT NULL,
+--     title_en character varying(500),
+--     year character(4),
+--     country character varying(100),
+--     language character varying(50),
+--     dissemination_medium character varying(50), 
+--     homepage character varying(500),
+--     doi character varying(100),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     CONSTRAINT "PK_short_course_id" PRIMARY KEY (id),
+--     CONSTRAINT "FK_short_course_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
+-- );
+-- CREATE TABLE IF NOT EXISTS public.social_media_website_blog (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid,
+--     production_sequence integer, 
+--     title character varying(500) NOT NULL,
+--     title_en character varying(500),
+--     year character(4),
+--     country character varying(100),
+--     language character varying(50),
+--     dissemination_medium character varying(50), 
+--     homepage character varying(500),
+--     doi character varying(100),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     CONSTRAINT "PK_social_media_website_blog_id" PRIMARY KEY (id),
+--     CONSTRAINT "FK_social_media_website_blog_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
+-- );
+-- CREATE TABLE IF NOT EXISTS public.other_technical_production (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid,
+--     production_sequence integer, 
+--     title character varying(500) NOT NULL,
+--     title_en character varying(500),
+--     year character(4),
+--     country character varying(100),
+--     language character varying(50),
+--     dissemination_medium character varying(50), 
+--     homepage character varying(500),
+--     doi character varying(100),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     CONSTRAINT "PK_other_technical_production_id" PRIMARY KEY (id),
+--     CONSTRAINT "FK_other_technical_production_researcher" FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE CASCADE ON DELETE SET NULL
+-- );
 --     id uuid NOT NULL DEFAULT uuid_generate_v4(),
 --     researcher_id uuid NOT NULL,
     
@@ -524,31 +524,31 @@ CREATE TABLE IF NOT EXISTS public.participation_events (
 --     CONSTRAINT "FKPeriodicalMagazineArticle" FOREIGN KEY (periodical_magazine_id) REFERENCES public.periodical_magazine (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
 --     CONSTRAINT "FKPublicationArticle" FOREIGN KEY (bibliographic_production_id) REFERENCES public.bibliographic_production (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
 -- );
-CREATE TABLE IF NOT EXISTS public.bibliographic_production_work_in_event(
-    bibliographic_production_id uuid NOT NULL UNIQUE,
-    event_classification character varying(100),
-    event_name character varying(600),
-    event_city character varying(255),
-    event_year integer,
-    proceedings_title character varying(600),
-    volume character varying(30),
-    issue character varying(30),
-    series character varying(100),
-    start_page character varying(30),
-    end_page character varying(30),
-    publisher_name character varying(255),
-    publisher_city character varying(255),
-    event_name_english character varying(600),
-    identifier_number character varying(100),
-    isbn character varying(20),
-    stars INTEGER DEFAULT 0,
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
-    CONSTRAINT pk_bibliographic_production_event_work PRIMARY KEY (bibliographic_production_id),
-    CONSTRAINT fk_bibliographic_production_event_work_production FOREIGN KEY (bibliographic_production_id) 
-        REFERENCES public.bibliographic_production (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
-);
+-- CREATE TABLE IF NOT EXISTS public.bibliographic_production_work_in_event(
+--     bibliographic_production_id uuid NOT NULL UNIQUE,
+--     event_classification character varying(100),
+--     event_name character varying(600),
+--     event_city character varying(255),
+--     event_year integer,
+--     proceedings_title character varying(600),
+--     volume character varying(30),
+--     issue character varying(30),
+--     series character varying(100),
+--     start_page character varying(30),
+--     end_page character varying(30),
+--     publisher_name character varying(255),
+--     publisher_city character varying(255),
+--     event_name_english character varying(600),
+--     identifier_number character varying(100),
+--     isbn character varying(20),
+--     stars INTEGER DEFAULT 0,
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
+--     CONSTRAINT pk_bibliographic_production_event_work PRIMARY KEY (bibliographic_production_id),
+--     CONSTRAINT fk_bibliographic_production_event_work_production FOREIGN KEY (bibliographic_production_id) 
+--         REFERENCES public.bibliographic_production (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+-- );
 -- CREATE TABLE IF NOT EXISTS public.bibliographic_production_book (
 --     id uuid NOT NULL DEFAULT uuid_generate_v4(),
 --     bibliographic_production_id uuid NOT NULL,
@@ -808,121 +808,121 @@ CREATE TABLE IF NOT EXISTS research_group_researcher (
 --     predominant_major_area VARCHAR(510),
 --     predominant_area VARCHAR(510)
 -- );
-CREATE TABLE research_project (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    researcher_id uuid NOT NULL REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    start_year INT,
-    end_year INT,
-    agency_code VARCHAR(255),
-    agency_name VARCHAR(255),
-    project_name TEXT,
-    status VARCHAR(255),
-    nature VARCHAR(255),
-    number_undergraduates INT DEFAULT 0,
-    number_specialists INT DEFAULT 0,
-    number_academic_masters INT DEFAULT 0,
-    number_phd INT DEFAULT 0,
-    description TEXT,
-    stars INTEGER DEFAULT 0
-);
-CREATE TABLE research_project_components (
-    project_id uuid NOT NULL REFERENCES public.research_project(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    name VARCHAR(255),
-    lattes_id VARCHAR(255),
-    citations VARCHAR
-);
-CREATE TABLE research_project_foment (
-    project_id uuid NOT NULL REFERENCES public.research_project(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    agency_name VARCHAR(255),
-    agency_code VARCHAR(255),
-    nature VARCHAR(255)
-);
-CREATE TABLE research_project_production (
-    project_id uuid NOT NULL REFERENCES public.research_project(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    title TEXT,
-    type VARCHAR(255)
-);
-CREATE TABLE IF NOT EXISTS public.technical_work (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    researcher_id uuid NOT NULL,
-    country VARCHAR,
-    title TEXT NOT NULL,
-    nature VARCHAR,
-    funding_institution VARCHAR,
-    duration INT,
-    year INT,
-    CONSTRAINT fk_researcher
-        FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS public.technical_work_presentation (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    researcher_id uuid NOT NULL,
-    country VARCHAR,
-    title TEXT NOT NULL,
-    nature VARCHAR,
-    year INT,
-	event_name VARCHAR,
-	promoting_institution VARCHAR,
-    CONSTRAINT fk_researcher
-        FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS public.technical_work_program (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    researcher_id uuid NOT NULL,
-    country VARCHAR,
-    title TEXT NOT NULL,
-    nature VARCHAR,
-    year INT,
-	theme VARCHAR,
-    CONSTRAINT fk_researcher
-        FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS public.technological_product (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    researcher_id uuid NOT NULL,
-    country VARCHAR,
-    title TEXT NOT NULL,
-    nature VARCHAR,
-	type VARCHAR,
-    year INT,
-    CONSTRAINT fk_researcher
-        FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS public.process_or_technique (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid NOT NULL,
+-- CREATE TABLE research_project (
+--     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+--     researcher_id uuid NOT NULL REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE,
+--     start_year INT,
+--     end_year INT,
+--     agency_code VARCHAR(255),
+--     agency_name VARCHAR(255),
+--     project_name TEXT,
+--     status VARCHAR(255),
+--     nature VARCHAR(255),
+--     number_undergraduates INT DEFAULT 0,
+--     number_specialists INT DEFAULT 0,
+--     number_academic_masters INT DEFAULT 0,
+--     number_phd INT DEFAULT 0,
+--     description TEXT,
+--     stars INTEGER DEFAULT 0
+-- );
+-- CREATE TABLE research_project_components (
+--     project_id uuid NOT NULL REFERENCES public.research_project(id) ON UPDATE CASCADE ON DELETE CASCADE,
+--     name VARCHAR(255),
+--     lattes_id VARCHAR(255),
+--     citations VARCHAR
+-- );
+-- CREATE TABLE research_project_foment (
+--     project_id uuid NOT NULL REFERENCES public.research_project(id) ON UPDATE CASCADE ON DELETE CASCADE,
+--     agency_name VARCHAR(255),
+--     agency_code VARCHAR(255),
+--     nature VARCHAR(255)
+-- );
+-- CREATE TABLE research_project_production (
+--     project_id uuid NOT NULL REFERENCES public.research_project(id) ON UPDATE CASCADE ON DELETE CASCADE,
+--     title TEXT,
+--     type VARCHAR(255)
+-- );
+-- CREATE TABLE IF NOT EXISTS public.technical_work (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+--     researcher_id uuid NOT NULL,
+--     country VARCHAR,
+--     title TEXT NOT NULL,
+--     nature VARCHAR,
+--     funding_institution VARCHAR,
+--     duration INT,
+--     year INT,
+--     CONSTRAINT fk_researcher
+--         FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
+-- );
+-- CREATE TABLE IF NOT EXISTS public.technical_work_presentation (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+--     researcher_id uuid NOT NULL,
+--     country VARCHAR,
+--     title TEXT NOT NULL,
+--     nature VARCHAR,
+--     year INT,
+-- 	event_name VARCHAR,
+-- 	promoting_institution VARCHAR,
+--     CONSTRAINT fk_researcher
+--         FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
+-- );
+-- CREATE TABLE IF NOT EXISTS public.technical_work_program (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+--     researcher_id uuid NOT NULL,
+--     country VARCHAR,
+--     title TEXT NOT NULL,
+--     nature VARCHAR,
+--     year INT,
+-- 	theme VARCHAR,
+--     CONSTRAINT fk_researcher
+--         FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
+-- );
+-- CREATE TABLE IF NOT EXISTS public.technological_product (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+--     researcher_id uuid NOT NULL,
+--     country VARCHAR,
+--     title TEXT NOT NULL,
+--     nature VARCHAR,
+-- 	type VARCHAR,
+--     year INT,
+--     CONSTRAINT fk_researcher
+--         FOREIGN KEY (researcher_id) REFERENCES public.researcher(id) ON UPDATE CASCADE ON DELETE CASCADE
+-- );
+-- CREATE TABLE IF NOT EXISTS public.process_or_technique (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid NOT NULL,
 
-    -- Dados Básicos
-    sequence_id integer,
-    nature varchar(255),
-    title text NOT NULL,
-    title_en text,
-    "year" character(4),
-    country varchar(100),
-    language varchar(50),
-    dissemination_medium varchar(255),
-    home_page text,
-    doi varchar(255),
-    is_relevant boolean DEFAULT false,
-    has_innovation_potential VARCHAR,
+--     -- Dados Básicos
+--     sequence_id integer,
+--     nature varchar(255),
+--     title text NOT NULL,
+--     title_en text,
+--     "year" character(4),
+--     country varchar(100),
+--     language varchar(50),
+--     dissemination_medium varchar(255),
+--     home_page text,
+--     doi varchar(255),
+--     is_relevant boolean DEFAULT false,
+--     has_innovation_potential VARCHAR,
 
-    -- Detalhamento
-    purpose text,
-    purpose_en text,
-    availability varchar(100),
-    funding_institution varchar(500),
-    city varchar(255),
+--     -- Detalhamento
+--     purpose text,
+--     purpose_en text,
+--     availability varchar(100),
+--     funding_institution varchar(500),
+--     city varchar(255),
     
-    -- Controle
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
-    deleted_at timestamp without time zone,
+--     -- Controle
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     updated_at timestamp without time zone,
+--     deleted_at timestamp without time zone,
     
-    CONSTRAINT "PK_process_or_technique" PRIMARY KEY (id),
-    CONSTRAINT "FK_process_or_technique_researcher" FOREIGN KEY (researcher_id)
-        REFERENCES public.researcher (id) MATCH SIMPLE
-        ON UPDATE CASCADE ON DELETE CASCADE
-);
+--     CONSTRAINT "PK_process_or_technique" PRIMARY KEY (id),
+--     CONSTRAINT "FK_process_or_technique_researcher" FOREIGN KEY (researcher_id)
+--         REFERENCES public.researcher (id) MATCH SIMPLE
+--         ON UPDATE CASCADE ON DELETE CASCADE
+-- );
 CREATE TABLE IF NOT EXISTS public.process_author (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     process_id uuid NOT NULL,
