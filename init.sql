@@ -442,21 +442,21 @@ CREATE TABLE IF NOT EXISTS public.area_specialty (
 --     CONSTRAINT research_report_pkey PRIMARY KEY (id),
 --     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
 -- );
-CREATE TABLE IF NOT EXISTS public.guidance (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    researcher_id uuid,
-    title character varying(400),
-    nature character varying(255),
-    oriented character varying(255),
-    type character varying(255),
-    status character varying(100),
-    year smallint,
-    is_new boolean DEFAULT true,
-    stars INTEGER DEFAULT 0,
-    CONSTRAINT guidance_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
-);
+-- CREATE TABLE IF NOT EXISTS public.guidance (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     researcher_id uuid,
+--     title character varying(400),
+--     nature character varying(255),
+--     oriented character varying(255),
+--     type character varying(255),
+--     status character varying(100),
+--     year smallint,
+--     is_new boolean DEFAULT true,
+--     stars INTEGER DEFAULT 0,
+--     CONSTRAINT guidance_pkey PRIMARY KEY (id),
+--     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+-- );
 -- CREATE TABLE IF NOT EXISTS public.brand (
 --     id uuid NOT NULL DEFAULT uuid_generate_v4(),
 --     created_at timestamp without time zone NOT NULL DEFAULT now(),
@@ -472,21 +472,21 @@ CREATE TABLE IF NOT EXISTS public.guidance (
 --     CONSTRAINT brand_pkey PRIMARY KEY (id),
 --     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
 -- );
-CREATE TABLE IF NOT EXISTS public.participation_events (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    created_at timestamp without time zone NOT NULL DEFAULT now(),
-    title character varying(500),
-    event_name character varying(500),
-    nature character varying(30),
-    form_participation character varying(30),
-    type_participation character varying(30),
-    researcher_id uuid,
-    year smallint,
-    is_new boolean DEFAULT true,
-    stars INTEGER DEFAULT 0,
-    CONSTRAINT participation_events_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
-);
+-- CREATE TABLE IF NOT EXISTS public.participation_events (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     created_at timestamp without time zone NOT NULL DEFAULT now(),
+--     title character varying(500),
+--     event_name character varying(500),
+--     nature character varying(30),
+--     form_participation character varying(30),
+--     type_participation character varying(30),
+--     researcher_id uuid,
+--     year smallint,
+--     is_new boolean DEFAULT true,
+--     stars INTEGER DEFAULT 0,
+--     CONSTRAINT participation_events_pkey PRIMARY KEY (id),
+--     CONSTRAINT fk_researcher_id FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+-- );
 -- CREATE TABLE IF NOT EXISTS public.event_organization (
 --     id uuid NOT NULL DEFAULT uuid_generate_v4(),
 --     created_at timestamp without time zone NOT NULL DEFAULT now(),

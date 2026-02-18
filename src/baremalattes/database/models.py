@@ -287,6 +287,9 @@ class Researcher:
     last_update: Mapped[datetime] = mapped_column(
         server_default=text('now()'), init=False
     )
+    has_image: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('false'), default=False
+    )
     citations: Mapped[Optional[str]] = mapped_column(String, default=None)
     orcid: Mapped[Optional[str]] = mapped_column(String, default=None)
     abstract: Mapped[Optional[str]] = mapped_column(Text, default=None)
@@ -797,9 +800,7 @@ class ResearchProjectFoment:
     project_id: Mapped[UUID] = mapped_column(
         ForeignKey('research_project.id'), primary_key=True
     )
-    agency_name: Mapped[Optional[str]] = mapped_column(
-        String, default=None, primary_key=True
-    )
+    agency_name: Mapped[Optional[str]] = mapped_column(String, default=None)
     agency_code: Mapped[Optional[str]] = mapped_column(String, default=None)
     nature: Mapped[Optional[str]] = mapped_column(String, default=None)
 
@@ -811,9 +812,7 @@ class ResearchProjectProduction:
     project_id: Mapped[UUID] = mapped_column(
         ForeignKey('research_project.id'), primary_key=True
     )
-    title: Mapped[Optional[str]] = mapped_column(
-        Text, default=None, primary_key=True
-    )
+    title: Mapped[Optional[str]] = mapped_column(Text, default=None)
     type: Mapped[Optional[str]] = mapped_column(String, default=None)
 
 
@@ -1190,3 +1189,61 @@ class OtherTechnicalProduction:
     )
     homepage: Mapped[Optional[str]] = mapped_column(String, default=None)
     doi: Mapped[Optional[str]] = mapped_column(String, default=None)
+
+
+@table_registry.mapped_as_dataclass
+class Guidance:
+    __tablename__ = 'guidance'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    researcher_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('researcher.id'), default=None
+    )
+    title: Mapped[Optional[str]] = mapped_column(String, default=None)
+    nature: Mapped[Optional[str]] = mapped_column(String, default=None)
+    oriented: Mapped[Optional[str]] = mapped_column(String, default=None)
+    type: Mapped[Optional[str]] = mapped_column(String, default=None)
+    status: Mapped[Optional[str]] = mapped_column(String, default=None)
+    year: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    is_new: Mapped[Optional[bool]] = mapped_column(
+        Boolean, server_default=text('true'), default=True
+    )
+    stars: Mapped[Optional[int]] = mapped_column(
+        Integer, server_default=text('0'), default=0
+    )
+
+
+@table_registry.mapped_as_dataclass
+class ParticipationEvents:
+    __tablename__ = 'participation_events'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    title: Mapped[Optional[str]] = mapped_column(String, default=None)
+    event_name: Mapped[Optional[str]] = mapped_column(String, default=None)
+    nature: Mapped[Optional[str]] = mapped_column(String, default=None)
+    form_participation: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    type_participation: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    researcher_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('researcher.id'), default=None
+    )
+    year: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    is_new: Mapped[Optional[bool]] = mapped_column(
+        Boolean, server_default=text('true'), default=True
+    )
+    stars: Mapped[Optional[int]] = mapped_column(
+        Integer, server_default=text('0'), default=0
+    )
