@@ -3,9 +3,7 @@ import os
 import polars as pl
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_core.messages import HumanMessage
-from langchain_core.vectorstores import InMemoryVectorStore
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import ChatOpenAI
 
 from baremalattes.report.prompts import PROMPTS_AVALIACAO
 from baremalattes.settings import Settings
@@ -40,16 +38,6 @@ def evaluation(lattes_id: str):
 
     documento_completo = '\n\n'.join([doc.page_content for doc in documents])
 
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000, chunk_overlap=200
-    )
-    splits = text_splitter.split_documents(documents)
-
-    embeddings = OpenAIEmbeddings(api_key=SETTINGS.OPENAI_API_KEY)
-
-    vectorstore = InMemoryVectorStore.from_documents(splits, embeddings)
-    retriever = vectorstore.as_retriever(search_kwargs={'k': 3})
-
     llm = ChatOpenAI(
         api_key=SETTINGS.OPENAI_API_KEY, model='gpt-4o-mini', temperature=0
     )
@@ -58,19 +46,11 @@ def evaluation(lattes_id: str):
 
     for key in expected_keys:
         pergunta = PROMPTS_AVALIACAO.get(key, f'Descreva: {key}')
-
-        docs_recuperados = retriever.invoke(pergunta)
-        contexto = '\n\n'.join([doc.page_content for doc in docs_recuperados])
-
         mensagem = HumanMessage(
             content=f'Responda à pergunta utilizando o documento fornecido.\n\nDocumento: {documento_completo}\n\nPergunta: {pergunta}'
         )
-
         resposta = llm.invoke([mensagem])
-
         resultados[key] = resposta.content
-        resultados[f'{key}_rag'] = contexto
-
     return resultados
 
 
@@ -82,23 +62,14 @@ def run_aieval_process(researchers: pl.DataFrame):
             evaluation,
             return_dtype=pl.Struct([
                 pl.Field('publico_produto', pl.String),
-                pl.Field('publico_produto_rag', pl.String),
                 pl.Field('objetivos_metas_relevancia', pl.String),
-                pl.Field('objetivos_metas_relevancia_rag', pl.String),
                 pl.Field('metodologia_gestao', pl.String),
-                pl.Field('metodologia_gestao_rag', pl.String),
                 pl.Field('colaboracoes_financiamento', pl.String),
-                pl.Field('colaboracoes_financiamento_rag', pl.String),
                 pl.Field('potencial_inovacao_empreendedorismo', pl.String),
-                pl.Field('potencial_inovacao_empreendedorismo_rag', pl.String),
                 pl.Field('demandas_escalabilidade', pl.String),
-                pl.Field('demandas_escalabilidade_rag', pl.String),
                 pl.Field('maturidade_resultados', pl.String),
-                pl.Field('maturidade_resultados_rag', pl.String),
                 pl.Field('organizacao_parcerias_extensao', pl.String),
-                pl.Field('organizacao_parcerias_extensao_rag', pl.String),
                 pl.Field('perfil_tecnologico', pl.String),
-                pl.Field('perfil_tecnologico_rag', pl.String),
             ]),
         )
         .alias('info_lattes')

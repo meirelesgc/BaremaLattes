@@ -1,7 +1,8 @@
 import polars as pl
 
 from baremalattes.database.connection import get_session as get_session
-from baremalattes.report.ai_evaluation import run_aieval_process
+
+# from baremalattes.report.ai_evaluation import run_aieval_process
 from baremalattes.report.metrics import (
     get_articles,
     get_assets_ip,
@@ -79,6 +80,42 @@ def process_and_merge_production(
     return merge_data(df_researchers, df_grouped)
 
 
+def add_technological_production_score(df_researchers):
+    cols_to_sum = [
+        'total_valid_articles',
+        'total_valid_books_chapters',
+        'total_valid_software',
+        'total_valid_patents',
+        'total_valid_assets_ip',
+    ]
+
+    df_calc = df_researchers.with_columns(
+        pl.sum_horizontal([pl.col(c).fill_null(0) for c in cols_to_sum]).alias(
+            'total_producao_tecnologica'
+        ),
+        (
+            (pl.col('total_valid_patents').fill_null(0) > 0)
+            | (pl.col('total_valid_assets_ip').fill_null(0) > 0)
+            | (pl.col('total_valid_software').fill_null(0) > 0)
+        ).alias('has_innovation_registry'),
+    )
+
+    return df_calc.with_columns(
+        pl
+        .when(
+            (pl.col('total_producao_tecnologica') > 30)
+            & pl.col('has_innovation_registry')
+        )
+        .then(pl.lit('Acima de 8 (Excelente)'))
+        .when(pl.col('total_producao_tecnologica') >= 30)
+        .then(pl.lit('5 a 7 (Bom)'))
+        .when(pl.col('total_producao_tecnologica') >= 10)
+        .then(pl.lit('2 a 4 (Regular)'))
+        .otherwise(pl.lit('0 a 1 (Insuficiente)'))
+        .alias('criterio_producao_tecnologica')
+    ).drop('has_innovation_registry')
+
+
 def run_report_process(base_year=2026):
     researchers = get_researchers()
 
@@ -108,6 +145,8 @@ def run_report_process(base_year=2026):
             researchers, get_func, col_name, base_year
         )
 
-    researchers = run_aieval_process(researchers)
+    researchers = add_technological_production_score(researchers)
+
+    # researchers = run_aieval_process(researchers)
 
     researchers.write_excel('relatorio.xlsx')
