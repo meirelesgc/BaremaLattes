@@ -1,7 +1,8 @@
 INSTRUCAO_BASE = """
-Responda à pergunta abaixo com base no documento fornecido seguindo estritamente esta estrutura:
-Parágrafo 1: Resgate e apresente o trecho ou a seção do texto que fala sobre o assunto. Se a informação não estiver no texto, informe explicitamente.
-Parágrafo 2: Faça o seu comentário e análise crítica sobre o que foi resgatado.
+Responda à pergunta com base apenas no documento fornecido.
+1. Transcreva o trecho exato (ou a seção) que fundamenta a resposta.
+2. Informe objetivamente se o critério foi cumprido ou não, com base no trecho.
+Se não houver informação no texto, declare explicitamente que não foi identificado.
 """
 
 PROMPTS_AVALIACAO = {
