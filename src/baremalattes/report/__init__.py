@@ -16,9 +16,6 @@ from baremalattes.report.metrics import (
     get_researchers,
     get_software,
 )
-from baremalattes.report.metrics import (
-    get_softwares as get_softwares,
-)
 
 
 def add_evaluation_window(df_researchers):

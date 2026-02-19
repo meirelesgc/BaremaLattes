@@ -221,3 +221,4 @@ __marimo__/
 *.log
 pgdata
 *.xlsx
+*.pdf
