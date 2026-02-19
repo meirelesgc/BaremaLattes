@@ -1,6 +1,7 @@
 import polars as pl
 
 from baremalattes.database.connection import get_session as get_session
+from baremalattes.report.ai_evaluation import run_aieval_process
 from baremalattes.report.metrics import (
     get_articles,
     get_assets_ip,
@@ -106,5 +107,7 @@ def run_report_process(base_year=2026):
         researchers = process_and_merge_production(
             researchers, get_func, col_name, base_year
         )
+
+    researchers = run_aieval_process(researchers)
 
     researchers.write_excel('relatorio.xlsx')
