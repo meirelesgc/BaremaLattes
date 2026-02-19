@@ -218,4 +218,47 @@ def run_report_process():
         pesquisadores, desenhos_industriais_ou_marcas_finais
     )
 
-    print(pesquisadores)
+    colunas_tecnologicas = [
+        'total_software_validos',
+        'total_patentes_validas',
+        'total_desenhos_industriais_ou_marcas_validas',
+    ]
+
+    pesquisadores = pesquisadores.with_columns(
+        pl.col(colunas_tecnologicas).fill_null(0)
+    )
+
+    pesquisadores = pesquisadores.with_columns(
+        pl.sum_horizontal(colunas_tecnologicas).alias(
+            'total_producao_tec_inovacao'
+        )
+    )
+
+    tem_registro_patente = (pl.col('total_patentes_validas') > 0) | (
+        pl.col('total_desenhos_industriais_ou_marcas_validas') > 0
+    )
+
+    pesquisadores = pesquisadores.with_columns(
+        pl
+        .when(
+            (pl.col('total_producao_tec_inovacao') > 30) & tem_registro_patente
+        )
+        .then(8)
+        .when(pl.col('total_producao_tec_inovacao') >= 30)
+        .then(5)
+        .when(pl.col('total_producao_tec_inovacao') >= 10)
+        .then(2)
+        .otherwise(0)
+        .alias('nota_base_producao_tec')
+    )
+
+    pesquisadores = pesquisadores.with_columns(
+        (pl.col('nota_base_producao_tec') * 3).alias(
+            'pontuacao_final_tec_peso_3'
+        )
+    )
+    pesquisadores = pesquisadores.with_columns(
+        pl.lit('Segundo bloco em desenvolvimento').alias('status_etapa_2')
+    )
+
+    pesquisadores.write_excel('relatorio_pesquisadores.xlsx')
