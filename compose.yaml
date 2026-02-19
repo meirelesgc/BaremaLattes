@@ -14,3 +14,13 @@ services:
       retries: 5
     ports: 
       - "5432:5432"
+
+  barema_hop:
+    image: gleidsoncosta/simcc-extrator:latest
+    environment:
+      - HOP_LOG_LEVEL=Basic
+      - HOP_PROJECT_NAME=Jade-Extrator
+      - HOP_PROJECT_FOLDER=/files/jade-extrator
+      - HOP_RUN_CONFIG=local
+      - HOP_FILE_PATH=$${PROJECT_HOME}/workflows/Index.hwf
+      - HOP_RUN_PARAMETERS=DATABASE_URL=jdbc:postgresql://barema_db:5432/barema?user=postgres&password=postgres
