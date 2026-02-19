@@ -688,18 +688,18 @@ CREATE TABLE IF NOT EXISTS public.researcher_production (
     CONSTRAINT researcher_production_pkey PRIMARY KEY (researcher_production_id),
     CONSTRAINT researcher_production_researcher_id_fkey FOREIGN KEY (researcher_id) REFERENCES public.researcher (id) ON UPDATE  CASCADE ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS public.foment (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    researcher_id uuid REFERENCES researcher(id) ON DELETE CASCADE ON UPDATE  CASCADE,
-    modality_code character varying(50),
-    modality_name character varying(255),
-    call_title character varying(255),
-    category_level_code character varying(50),
-    funding_program_name character varying(255),
-    institute_name character varying(255),
-    aid_quantity integer,
-    scholarship_quantity integer
-);
+-- CREATE TABLE IF NOT EXISTS public.foment (
+--     id uuid NOT NULL DEFAULT uuid_generate_v4(),
+--     researcher_id uuid REFERENCES researcher(id) ON DELETE CASCADE ON UPDATE  CASCADE,
+--     modality_code character varying(50),
+--     modality_name character varying(255),
+--     call_title character varying(255),
+--     category_level_code character varying(50),
+--     funding_program_name character varying(255),
+--     institute_name character varying(255),
+--     aid_quantity integer,
+--     scholarship_quantity integer
+-- );
 -- CREATE TABLE education (
 --     id UUID NOT NULL DEFAULT uuid_generate_v4(),
 --     researcher_id UUID NOT NULL,

@@ -1247,3 +1247,32 @@ class ParticipationEvents:
     stars: Mapped[Optional[int]] = mapped_column(
         Integer, server_default=text('0'), default=0
     )
+
+
+@table_registry.mapped_as_dataclass
+class Foment:
+    __tablename__ = 'foment'
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text('uuid_generate_v4()'),
+        init=False,
+    )
+    researcher_id: Mapped[Optional[UUID]] = mapped_column(
+        ForeignKey('researcher.id'), default=None
+    )
+    modality_code: Mapped[Optional[str]] = mapped_column(String, default=None)
+    modality_name: Mapped[Optional[str]] = mapped_column(String, default=None)
+    call_title: Mapped[Optional[str]] = mapped_column(String, default=None)
+    category_level_code: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    funding_program_name: Mapped[Optional[str]] = mapped_column(
+        String, default=None
+    )
+    institute_name: Mapped[Optional[str]] = mapped_column(String, default=None)
+    aid_quantity: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    scholarship_quantity: Mapped[Optional[int]] = mapped_column(
+        Integer, default=None
+    )
