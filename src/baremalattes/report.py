@@ -156,79 +156,31 @@ def adicionar_nivel_doutorado(df_tempo):
     return df_com_nivel
 
 
-def run_report_process():
-    pesquisadores = get_pesquisadores()
-
-    _tempo_doutorado = get_tempo_doutorado()
-    tempo_doutorado = adicionar_nivel_doutorado(_tempo_doutorado)
-    pesquisadores = merge_data(pesquisadores, tempo_doutorado)
-
-    _nivel_bolsistas = get_nivel_bolsistas()
-    pesquisadores = merge_data(pesquisadores, _nivel_bolsistas)
-
-    pesquisadores = adicionar_janela_avaliacao(pesquisadores)
-
-    _artigos = get_artigos_em_periodicos()
-    artigos_filtrados = filtrar_por_janela(
-        _artigos, pesquisadores, ano_base=2026
-    )
-    artigos_finais = artigos_filtrados.group_by('researcher_id').agg(
-        pl.col('qtd').sum().alias('total_artigos_validos')
-    )
-    pesquisadores = merge_data(pesquisadores, artigos_finais)
-
-    _livros = get_livros_e_capitulos()
-    livros_filtrados = filtrar_por_janela(_livros, pesquisadores, ano_base=2026)
-    livros_finais = livros_filtrados.group_by('researcher_id').agg(
-        pl.col('qtd').sum().alias('total_livros_validos')
-    )
-    pesquisadores = merge_data(pesquisadores, livros_finais)
-
-    _software = get_software()
-    software_filtrados = filtrar_por_janela(
-        _software, pesquisadores, ano_base=2026
-    )
-    softwars_filnais = software_filtrados.group_by('researcher_id').agg(
-        pl.col('qtd').sum().alias('total_software_validos')
-    )
-    pesquisadores = merge_data(pesquisadores, softwars_filnais)
-
-    _patentes = get_patentes()
-    patentes_filtradas = filtrar_por_janela(
-        _patentes, pesquisadores, ano_base=2026
-    )
-    patentes_finais = patentes_filtradas.group_by('researcher_id').agg(
-        pl.col('qtd').sum().alias('total_patentes_validas')
-    )
-    pesquisadores = merge_data(pesquisadores, patentes_finais)
-
-    _desenhos_industriais_ou_marcas = get_desenhos_industriais_ou_marcas()
-    desenhos_industriais_ou_marcas_filtradas = filtrar_por_janela(
-        _desenhos_industriais_ou_marcas, pesquisadores, ano_base=2026
-    )
-    desenhos_industriais_ou_marcas_finais = (
-        desenhos_industriais_ou_marcas_filtradas.group_by('researcher_id').agg(
-            pl
-            .col('qtd')
-            .sum()
-            .alias('total_desenhos_industriais_ou_marcas_validas')
-        )
-    )
-    pesquisadores = merge_data(
-        pesquisadores, desenhos_industriais_ou_marcas_finais
+def processar_e_mesclar_producao(
+    df_pesquisadores, func_get_dados, nome_coluna_total, ano_base=2026
+):
+    df_dados = func_get_dados()
+    df_filtrado = filtrar_por_janela(
+        df_dados, df_pesquisadores, ano_base=ano_base
     )
 
+    df_agrupado = df_filtrado.group_by('researcher_id').agg(
+        pl.col('qtd').sum().alias(nome_coluna_total)
+    )
+
+    return merge_data(df_pesquisadores, df_agrupado)
+
+
+def calcular_pontuacao_tecnologica(df_pesquisadores):
     colunas_tecnologicas = [
         'total_software_validos',
         'total_patentes_validas',
         'total_desenhos_industriais_ou_marcas_validas',
     ]
 
-    pesquisadores = pesquisadores.with_columns(
-        pl.col(colunas_tecnologicas).fill_null(0)
-    )
+    df = df_pesquisadores.with_columns(pl.col(colunas_tecnologicas).fill_null(0))
 
-    pesquisadores = pesquisadores.with_columns(
+    df = df.with_columns(
         pl.sum_horizontal(colunas_tecnologicas).alias(
             'total_producao_tec_inovacao'
         )
@@ -238,7 +190,7 @@ def run_report_process():
         pl.col('total_desenhos_industriais_ou_marcas_validas') > 0
     )
 
-    pesquisadores = pesquisadores.with_columns(
+    df = df.with_columns(
         pl
         .when(
             (pl.col('total_producao_tec_inovacao') > 30) & tem_registro_patente
@@ -252,13 +204,46 @@ def run_report_process():
         .alias('nota_base_producao_tec')
     )
 
-    pesquisadores = pesquisadores.with_columns(
+    df = df.with_columns(
         (pl.col('nota_base_producao_tec') * 3).alias(
             'pontuacao_final_tec_peso_3'
         )
     )
+
+    return df
+
+
+def run_report_process(ano_base=2026):
+    pesquisadores = get_pesquisadores()
+
+    tempo_doutorado = adicionar_nivel_doutorado(get_tempo_doutorado())
+    pesquisadores = merge_data(pesquisadores, tempo_doutorado)
+
+    nivel_bolsistas = get_nivel_bolsistas()
+    pesquisadores = merge_data(pesquisadores, nivel_bolsistas)
+
+    pesquisadores = adicionar_janela_avaliacao(pesquisadores)
+
+    producoes_para_processar = [
+        (get_artigos_em_periodicos, 'total_artigos_validos'),
+        (get_livros_e_capitulos, 'total_livros_validos'),
+        (get_software, 'total_software_validos'),
+        (get_patentes, 'total_patentes_validas'),
+        (
+            get_desenhos_industriais_ou_marcas,
+            'total_desenhos_industriais_ou_marcas_validas',
+        ),
+    ]
+
+    for func_get, nome_coluna in producoes_para_processar:
+        pesquisadores = processar_e_mesclar_producao(
+            pesquisadores, func_get, nome_coluna, ano_base
+        )
+
+    pesquisadores = calcular_pontuacao_tecnologica(pesquisadores)
+
     pesquisadores = pesquisadores.with_columns(
         pl.lit('Segundo bloco em desenvolvimento').alias('status_etapa_2')
     )
 
-    pesquisadores.write_excel('relatorio_pesquisadores.xlsx')
+    pesquisadores.write_excel('relatorio.xlsx')
