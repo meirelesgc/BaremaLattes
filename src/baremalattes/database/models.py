@@ -1276,3 +1276,20 @@ class Foment:
     scholarship_quantity: Mapped[Optional[int]] = mapped_column(
         Integer, default=None
     )
+
+
+@table_registry.mapped_as_dataclass
+class OpenAlexResearcher:
+    __tablename__ = 'openalex_researcher'
+
+    researcher_id: Mapped[UUID] = mapped_column(
+        ForeignKey('researcher.id'), primary_key=True
+    )
+    h_index: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    relevance_score: Mapped[Optional[float]] = mapped_column(Float, default=None)
+    works_count: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    cited_by_count: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    i10_index: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    scopus: Mapped[Optional[str]] = mapped_column(String(255), default=None)
+    orcid: Mapped[Optional[str]] = mapped_column(String(255), default=None)
+    openalex: Mapped[Optional[str]] = mapped_column(String(255), default=None)

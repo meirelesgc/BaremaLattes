@@ -222,3 +222,4 @@ __marimo__/
 pgdata
 *.xlsx
 *.pdf
+*.json

@@ -7,12 +7,20 @@ from baremalattes.database.connection import get_session
 def get_researchers():
     session = get_session()
     query = """
-    SELECT id::text AS researcher_id, name AS nome, lattes_id
-    FROM researcher;
+    SELECT id::text AS researcher_id, name AS nome, lattes_id,
+        openalex_researcher.h_index
+    FROM researcher
+    LEFT JOIN openalex_researcher ON
+        openalex_researcher.researcher_id = researcher.id;
     """
     result = session.execute(text(query))
     data = result.mappings().all()
-    schema = {'researcher_id': pl.Utf8, 'nome': pl.Utf8, 'lattes_id': pl.Utf8}
+    schema = {
+        'researcher_id': pl.Utf8,
+        'nome': pl.Utf8,
+        'lattes_id': pl.Utf8,
+        'h_index': pl.Utf8,
+    }
     return pl.DataFrame(data, schema=schema)
 
 
