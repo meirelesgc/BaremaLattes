@@ -34,5 +34,6 @@ class TerminalMenu:
                     input("\nPressione Enter para voltar...")
                 else:
                     input("\nOpção incorreta. Pressione Enter...")
-            except ValueError:
+            except ValueError as E:
+                print(E)
                 input("\nEntrada inválida. Pressione Enter...")

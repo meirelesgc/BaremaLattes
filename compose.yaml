@@ -1,0 +1,29 @@
+services:
+  barema_db:
+    image: pgvector/pgvector:pg17
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: barema
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports: 
+      - "5432:5432"
+
+  barema_hop:
+    profiles: [barema_hop]
+    image: gleidsoncosta/simcc-extrator:latest
+    volumes:
+      - /files/jade-extrator/datasets/lattes_xml:/files/jade-extrator/data/raw/lattes
+    environment:
+      - HOP_LOG_LEVEL=Basic
+      - HOP_PROJECT_NAME=Jade-Extrator
+      - HOP_PROJECT_FOLDER=/files/jade-extrator
+      - HOP_RUN_CONFIG=local
+      - HOP_FILE_PATH=$${PROJECT_HOME}/workflows/Index.hwf
+      - HOP_RUN_PARAMETERS=DATABASE_URL=jdbc:postgresql://barema_db:5432/barema?user=postgres&password=postgres

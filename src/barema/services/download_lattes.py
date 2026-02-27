@@ -95,6 +95,18 @@ def run_download_process():
         if not ids:
             return
 
+        existing_files = list(RAW_DATA_PATH.glob("*.xml"))
+        if existing_files:
+            print(
+                f"\n[!] Foram encontrados {len(existing_files)} arquivos em {RAW_DATA_PATH}"
+            )
+            choice = input(
+                "Deseja baixar e sobrescrever os arquivos existentes? (s/n): "
+            ).lower()
+            if choice != "s":
+                print("Operacao cancelada pelo usuario.")
+                return
+
         use_proxy = True
         http_client = httpx.Client(timeout=30.0, verify=False)
         soap_client = None if use_proxy else get_soap_client()
