@@ -14,6 +14,7 @@ from baremalattes.report.metrics import (
     get_phd_completed,
     get_phd_ongoing,
     get_phd_time,
+    get_research_report,
     get_researchers,
     get_software,
 )
@@ -86,6 +87,7 @@ def add_technological_production_score(df_researchers):
         'total_valid_software',
         'total_valid_patents',
         'total_valid_assets_ip',
+        'total_research_report',
     ]
 
     df_calc = df_researchers.with_columns(
@@ -132,6 +134,7 @@ def run_report_process(base_year=2026):
         (get_software, 'total_valid_software'),
         (get_patents, 'total_valid_patents'),
         (get_assets_ip, 'total_valid_assets_ip'),
+        (get_research_report, 'total_research_report'),
         (get_guidance_postdoc, 'total_valid_guidance_postdoc'),
         (get_phd_completed, 'total_valid_phd_completed'),
         (get_phd_ongoing, 'total_valid_phd_ongoing'),

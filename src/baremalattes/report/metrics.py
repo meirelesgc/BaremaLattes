@@ -125,6 +125,19 @@ def get_assets_ip():
     return pl.DataFrame(data, schema=schema)
 
 
+def get_research_report():
+    session = get_session()
+    query = """
+    SELECT researcher_id::text, year, COUNT(*) as qtd
+    FROM research_report
+    GROUP BY researcher_id, year;
+    """
+    result = session.execute(text(query))
+    data = result.mappings().all()
+    schema = {'researcher_id': pl.Utf8, 'year': pl.Int32, 'qtd': pl.Int64}
+    return pl.DataFrame(data, schema=schema)
+
+
 def get_guidance_postdoc():
     session = get_session()
     query = """
