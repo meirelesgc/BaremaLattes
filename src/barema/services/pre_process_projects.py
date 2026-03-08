@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 
+import httpx
 import pdfplumber
 import polars as pl
 
@@ -23,6 +24,10 @@ def project_metadata(input_folder: str, output_csv: str = "resultado_cnpq.csv"):
     # Criar a pasta not_processable caso não exista
     not_processable_folder = os.path.join(input_folder, "not_processable")
     os.makedirs(not_processable_folder, exist_ok=True)
+
+    # Criar a pasta attachment caso não exista
+    attachment_folder = os.path.join(input_folder, "attachment")
+    os.makedirs(attachment_folder, exist_ok=True)
 
     for file_name in os.listdir(input_folder):
         if file_name.lower().endswith(".pdf"):
@@ -74,6 +79,52 @@ def project_metadata(input_folder: str, output_csv: str = "resultado_cnpq.csv"):
                             print(
                                 f"Lido: {file_name} | Nome: {name} | CPF: {cpf} | Link: {link}"
                             )
+
+                            # --- Download do Anexo via HTTPX ---
+                            if link != "Não encontrado":
+                                try:
+                                    print(f"Baixando anexo de: {link}...")
+
+                                    # Usando httpx.stream para não sobrecarregar a memória
+                                    with httpx.stream(
+                                        "GET", link, timeout=15.0
+                                    ) as response:
+                                        if response.status_code == 200:
+                                            # Pega a última parte da URL para usar como nome do arquivo
+                                            attachment_filename = link.split("/")[-1]
+
+                                            # Limpa caracteres inválidos
+                                            attachment_filename = re.sub(
+                                                r'[\\/*?:"<>|)]',
+                                                "",
+                                                attachment_filename,
+                                            )
+
+                                            # Se o nome ficar vazio, cria um nome genérico usando o CPF
+                                            if not attachment_filename:
+                                                attachment_filename = f"anexo_{cpf}.pdf"
+
+                                            attachment_path = os.path.join(
+                                                attachment_folder, attachment_filename
+                                            )
+
+                                            with open(attachment_path, "wb") as f:
+                                                for chunk in response.iter_bytes(
+                                                    chunk_size=8192
+                                                ):
+                                                    f.write(chunk)
+                                            print(
+                                                f"-> Anexo salvo em: {attachment_path}"
+                                            )
+                                        else:
+                                            print(
+                                                f"-> Erro ao baixar (Status {response.status_code}): {link}"
+                                            )
+                                except httpx.RequestError as req_err:
+                                    print(
+                                        f"-> Falha na conexão ao baixar {link}: {req_err}"
+                                    )
+
                     else:
                         print(
                             f"Aviso: Não foi possível extrair texto puro de {file_name}"
@@ -102,8 +153,3 @@ def project_metadata(input_folder: str, output_csv: str = "resultado_cnpq.csv"):
     else:
         print("\nNenhum dado foi extraído. Verifique se a pasta contém PDFs válidos.")
         return None
-
-
-if __name__ == "__main__":
-    folder_path = r"data/raw/projects"
-    project_metadata(folder_path)
