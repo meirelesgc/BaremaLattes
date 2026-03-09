@@ -47,7 +47,7 @@ def download_attachments(df: pl.DataFrame, input_folder: str):
             print(f"-> Falha na conexão ao baixar {link}: {req_err}")
 
 
-def extratc_project_metadata(input_folder: str, output_csv: str = "resultado_cnpq.csv"):
+def extract_project_metadata(input_folder: str, output_csv: str = "resultado_cnpq.csv"):
     extracted_data = []
 
     name_pattern = re.compile(r"NOME:\s*(.+)", re.IGNORECASE)
