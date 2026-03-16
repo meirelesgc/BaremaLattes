@@ -67,63 +67,21 @@ def get_articles():
     return pl.DataFrame(data, schema=schema)
 
 
-def get_cultivar():
+def get_cultivar_patents():
     session = get_session()
     query = """
-    SELECT researcher_id::text, year::int, COUNT(*) as qtd
-    FROM registered_cultivar
-    GROUP BY researcher_id, year;
-    """
-    result = session.execute(text(query))
-    data = result.mappings().all()
-    schema = {"researcher_id": pl.Utf8, "year": pl.Int32, "qtd": pl.Int64}
-    return pl.DataFrame(data, schema=schema)
+    SELECT researcher_id, year, SUM(qtd) as qtd
+    FROM (
+        SELECT researcher_id::text, year::int AS year, COUNT(*) as qtd
+        FROM registered_cultivar
+        GROUP BY researcher_id, year
 
+        UNION ALL
 
-def get_short_course_taught():
-    session = get_session()
-    query = """
-    SELECT researcher_id::text, year::int, COUNT(*) as qtd
-    FROM short_course_taught
-    GROUP BY researcher_id, year;
-    """
-    result = session.execute(text(query))
-    data = result.mappings().all()
-    schema = {"researcher_id": pl.Utf8, "year": pl.Int32, "qtd": pl.Int64}
-    return pl.DataFrame(data, schema=schema)
-
-
-def get_radio_or_tv_program():
-    session = get_session()
-    query = """
-    SELECT researcher_id::text, year::int, COUNT(*) as qtd
-    FROM radio_or_tv_program
-    GROUP BY researcher_id, year;
-    """
-    result = session.execute(text(query))
-    data = result.mappings().all()
-    schema = {"researcher_id": pl.Utf8, "year": pl.Int32, "qtd": pl.Int64}
-    return pl.DataFrame(data, schema=schema)
-
-
-def get_social_media_website_blog():
-    session = get_session()
-    query = """
-    SELECT researcher_id::text, year::int, COUNT(*) as qtd
-    FROM social_media_website_blog
-    GROUP BY researcher_id, year;
-    """
-    result = session.execute(text(query))
-    data = result.mappings().all()
-    schema = {"researcher_id": pl.Utf8, "year": pl.Int32, "qtd": pl.Int64}
-    return pl.DataFrame(data, schema=schema)
-
-
-def get_other_technical_production():
-    session = get_session()
-    query = """
-    SELECT researcher_id::text, year::int, COUNT(*) as qtd
-    FROM other_technical_production
+        SELECT researcher_id::text, development_year::int AS year, COUNT(*) as qtd
+        FROM patent
+        GROUP BY researcher_id, development_year
+    ) t
     GROUP BY researcher_id, year;
     """
     result = session.execute(text(query))
@@ -174,20 +132,7 @@ def get_no_reg_software():
     return pl.DataFrame(data, schema=schema)
 
 
-def get_patents():
-    session = get_session()
-    query = """
-    SELECT researcher_id::text, development_year::int AS year, COUNT(*) as qtd
-    FROM patent
-    GROUP BY researcher_id, year;
-    """
-    result = session.execute(text(query))
-    data = result.mappings().all()
-    schema = {"researcher_id": pl.Utf8, "year": pl.Int32, "qtd": pl.Int64}
-    return pl.DataFrame(data, schema=schema)
-
-
-def get_assets_ip():
+def get_other_technical_production():
     session = get_session()
     query = """
     WITH combined_data AS (
@@ -196,22 +141,51 @@ def get_assets_ip():
         UNION ALL
         SELECT researcher_id::text, year::int
         FROM brand
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM technological_product
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM process_or_technique
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM technical_work
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM public.technical_work_presentation
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM letter_map_or_similar
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM short_course_taught
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM didactic_material
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM publishing
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM mockup
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM event_organization
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM public.radio_or_tv_program
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM research_report
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM public.social_media_website_blog
+        UNION ALL
+        SELECT researcher_id::text, year::int
+        FROM other_technical_production
     )
     SELECT researcher_id, year, COUNT(*) as qtd
     FROM combined_data
-    GROUP BY researcher_id, year;
-    """
-    result = session.execute(text(query))
-    data = result.mappings().all()
-    schema = {"researcher_id": pl.Utf8, "year": pl.Int32, "qtd": pl.Int64}
-    return pl.DataFrame(data, schema=schema)
-
-
-def get_research_report():
-    session = get_session()
-    query = """
-    SELECT researcher_id::text, year, COUNT(*) as qtd
-    FROM research_report
     GROUP BY researcher_id, year;
     """
     result = session.execute(text(query))
