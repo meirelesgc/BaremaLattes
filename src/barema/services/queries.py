@@ -11,7 +11,7 @@ def get_researchers():
         openalex_researcher.h_index, last_update::varchar AS last_update
     FROM researcher
     LEFT JOIN openalex_researcher ON
-        openalex_researcher.researcher_id = researcher.id;
+        openalex_researcher.researcher_id = researcher.id WHERE lattes_id = '8121264125922144'
     """
     result = session.execute(text(query))
     data = result.mappings().all()
@@ -144,46 +144,7 @@ def get_other_technical_production():
         FROM brand
         UNION ALL
         SELECT researcher_id::text, year::int
-        FROM technological_product
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM process_or_technique
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM technical_work
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM public.technical_work_presentation
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM letter_map_or_similar
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM short_course_taught
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM didactic_material
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM publishing
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM mockup
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM event_organization
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM public.radio_or_tv_program
-        UNION ALL
-        SELECT researcher_id::text, year::int
         FROM research_report
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM public.social_media_website_blog
-        UNION ALL
-        SELECT researcher_id::text, year::int
-        FROM other_technical_production
     )
     SELECT researcher_id, year, COUNT(*) as qtd
     FROM combined_data
@@ -269,7 +230,7 @@ def get_msc_ongoing():
     return pl.DataFrame(data, schema=schema)
 
 
-def get_scientific_projects():
+def get_coord_scientific_projects():
     session = get_session()
     query = """
     SELECT rp.researcher_id::text, rp.start_year::INT AS year, COUNT(DISTINCT rp.id) as qtd
@@ -295,7 +256,7 @@ def get_scientific_projects():
     return pl.DataFrame(data, schema=schema)
 
 
-def get_projects_with_companies():
+def get_coord_projects_with_companies():
     session = get_session()
     query = """
     SELECT rp.researcher_id::text, rp.start_year::INT AS year, COUNT(DISTINCT rp.id) as qtd
@@ -321,7 +282,7 @@ def get_projects_with_companies():
     return pl.DataFrame(data, schema=schema)
 
 
-def get_research_projects():
+def get_coord_research_projects():
     session = get_session()
     query = """
     SELECT rp.researcher_id::text, rp.start_year::INT AS year, COUNT(DISTINCT rp.id) as qtd

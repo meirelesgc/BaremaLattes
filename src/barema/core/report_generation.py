@@ -278,7 +278,7 @@ def participation_in_project_csv(base_year=current_year):
     researchers.write_excel("data/csv/participation_in_project.xlsx")
 
 
-def human_resources_csv(base_year=current_year):
+def human_resources_csv():
     researchers = get_researchers()
     foment_level = get_foment_level()
     researchers = merge_data(researchers, foment_level)
@@ -291,9 +291,7 @@ def human_resources_csv(base_year=current_year):
         (get_msc_ongoing, "total_msc_ongoing"),
     ]
     for get_func, col_name in productions_to_process:
-        researchers = process_and_merge_production(
-            researchers, get_func, col_name, base_year
-        )
+        researchers = process_and_merge_production(researchers, get_func, col_name, 0)
     researchers.write_csv("data/csv/human_resources.csv")
     researchers.write_excel("data/csv/human_resources.xlsx")
 
