@@ -1,8 +1,7 @@
 INSTRUCAO_BASE = """
 Responda à pergunta com base apenas no documento fornecido.
-1. Transcreva o trecho exato (ou a seção) que fundamenta a resposta.
-2. Informe objetivamente se o critério foi cumprido ou não, com base no trecho.
-Se não houver informação no texto, declare explicitamente que não foi identificado.
+Elenque até três exemplos separados por virgulas
+Pule duas linhas e transcreva o trecho exato que contem esses exemplos
 """
 
 PROMPTS_AVALIACAO = {

@@ -8,7 +8,7 @@ def get_researchers():
     session = get_session()
     query = """
     SELECT id::text AS researcher_id, name AS nome, lattes_id,
-        openalex_researcher.h_index
+        openalex_researcher.h_index, last_update::varchar AS last_update
     FROM researcher
     LEFT JOIN openalex_researcher ON
         openalex_researcher.researcher_id = researcher.id;
@@ -20,6 +20,7 @@ def get_researchers():
         "nome": pl.Utf8,
         "lattes_id": pl.Utf8,
         "h_index": pl.Utf8,
+        "last_update": pl.Utf8,
     }
     return pl.DataFrame(data, schema=schema)
 
