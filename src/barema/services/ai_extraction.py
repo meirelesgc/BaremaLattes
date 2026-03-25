@@ -31,7 +31,13 @@ class ExtractionResult(BaseModel):
     demanda: Optional[str]
 
 
+class AttachmentExtractionResult(BaseModel):
+    carta_apoio: bool
+    comentarios_anexos: Optional[str]
+
+
 parser = PydanticOutputParser(pydantic_object=ExtractionResult)
+parser_attachment = PydanticOutputParser(pydantic_object=AttachmentExtractionResult)
 
 prompt_template = """
 Você receberá o texto extraído das seções 11 e 12 do currículo.
@@ -64,13 +70,36 @@ Texto:
 {text}
 """
 
+prompt_template_attachment = """
+Você receberá o texto extraído dos anexos do formulário do projeto ou da súmula.
+
+Faça:
+1. Verifique se existe menção ou transcrição de uma carta de apoio da instituição de ensino ou de pesquisa a qual o proponente pertence. Retorne um valor booleano.
+2. Gere um texto resumindo os comentários gerais e o conteúdo dos anexos do projeto.
+
+Responda SOMENTE com o JSON no formato do parser.
+{format_instructions}
+
+Texto:
+{text}
+"""
+
 prompt = PromptTemplate(
     template=prompt_template,
     input_variables=["text"],
     partial_variables={"format_instructions": parser.get_format_instructions()},
 )
 
+prompt_attachment = PromptTemplate(
+    template=prompt_template_attachment,
+    input_variables=["text"],
+    partial_variables={
+        "format_instructions": parser_attachment.get_format_instructions()
+    },
+)
+
 chain = prompt | llm | parser
+chain_attachment = prompt_attachment | llm | parser_attachment
 
 
 def _load_text_from_pdf(file_path: str) -> str:
@@ -82,33 +111,49 @@ def _load_text_from_pdf(file_path: str) -> str:
 
 def extract_data(lattes_id: str) -> dict:
     file_path = f"data/raw/projects/{lattes_id}.pdf"
+    attachment_path = f"data/raw/projects/attachment/{lattes_id}.pdf"
 
-    if not os.path.exists(file_path):
-        return {
-            "lattes_id": lattes_id,
-            "licenciamento_qtd": 0,
-            "licenciamento": None,
-            "servicos_qtd": 0,
-            "servicos": None,
-            "empresas_qtd": 0,
-            "empresas": None,
-            "demanda_qtd": 0,
-            "demanda": None,
-        }
-
-    text = _load_text_from_pdf(file_path)
-    parsed = chain.invoke({"text": text})
-    return {
+    result = {
         "lattes_id": lattes_id,
-        "licenciamento_qtd": parsed.licenciamento_qtd,
-        "licenciamento": parsed.licenciamento,
-        "servicos_qtd": parsed.servicos_qtd,
-        "servicos": parsed.servicos,
-        "empresas_qtd": parsed.empresas_qtd,
-        "empresas": parsed.empresas,
-        "demanda_qtd": parsed.demanda_qtd,
-        "demanda": parsed.demanda,
+        "licenciamento_qtd": 0,
+        "licenciamento": None,
+        "servicos_qtd": 0,
+        "servicos": None,
+        "empresas_qtd": 0,
+        "empresas": None,
+        "demanda_qtd": 0,
+        "demanda": None,
+        "carta_apoio": False,
+        "comentarios_anexos": None,
     }
+
+    if os.path.exists(file_path):
+        text = _load_text_from_pdf(file_path)
+        parsed = chain.invoke({"text": text})
+        result.update(
+            {
+                "licenciamento_qtd": parsed.licenciamento_qtd,
+                "licenciamento": parsed.licenciamento,
+                "servicos_qtd": parsed.servicos_qtd,
+                "servicos": parsed.servicos,
+                "empresas_qtd": parsed.empresas_qtd,
+                "empresas": parsed.empresas,
+                "demanda_qtd": parsed.demanda_qtd,
+                "demanda": parsed.demanda,
+            }
+        )
+
+    if os.path.exists(attachment_path):
+        text_attachment = _load_text_from_pdf(attachment_path)
+        parsed_attachment = chain_attachment.invoke({"text": text_attachment})
+        result.update(
+            {
+                "carta_apoio": parsed_attachment.carta_apoio,
+                "comentarios_anexos": parsed_attachment.comentarios_anexos,
+            }
+        )
+
+    return result
 
 
 def load_cache() -> pl.DataFrame:
@@ -126,6 +171,8 @@ def load_cache() -> pl.DataFrame:
             "empresas": pl.Utf8,
             "demanda_qtd": pl.Int64,
             "demanda": pl.Utf8,
+            "carta_apoio": pl.Boolean,
+            "comentarios_anexos": pl.Utf8,
         }
     )
 
@@ -163,6 +210,8 @@ def get_transfer_of_technology(df_researchers: pl.DataFrame) -> pl.DataFrame:
                 "empresas": pl.Utf8,
                 "demanda_qtd": pl.Int64,
                 "demanda": pl.Utf8,
+                "carta_apoio": pl.Boolean,
+                "comentarios_anexos": pl.Utf8,
             },
         )
         cache = pl.concat([cache, df_new], how="vertical")
