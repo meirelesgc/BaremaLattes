@@ -5,6 +5,7 @@ import polars as pl
 
 from barema.services.ai_evaluation import evaluate_projects
 from barema.services.ai_extraction import get_transfer_of_technology
+from barema.services.ai_sumula import analyze_sumula
 from barema.services.ai_tag import analyze_funding_agencies
 from barema.services.queries import (
     get_articles,
@@ -32,6 +33,53 @@ from barema.services.report_utils import (
 )
 
 current_year = datetime.now().year
+
+# fmt: off
+CONFIG = [
+    {"old_name": "nome", "new_name": "Nome", "default_value": ""},
+    {"old_name": "lattes_id", "new_name": "Identificador Lattes", "default_value": ""},
+    {"old_name": "h_index", "new_name": "Índice h", "default_value": 0},
+    {"old_name": "last_update", "new_name": "Atualizado em", "default_value": ""},
+    {"old_name": "tempo_doutorado", "new_name": "Tempo de doutorado", "default_value": "0"},
+    {"old_name": "level", "new_name": "Nivel", "default_value": ""},
+    {"old_name": "nivel_bolsa", "new_name": "Bolsa de produtividade", "default_value": "Não contemplado"},
+    {"old_name": "window_years", "new_name": "Janela de analise", "default_value": 0},
+    {"old_name": "total_articles", "new_name": "Total de artigos", "default_value": 0},
+    {"old_name": "total_books", "new_name": "Total de livros", "default_value": 0},
+    {"old_name": "total_software", "new_name": "Total de software", "default_value": 0},
+    {"old_name": "total_no_reg_software", "new_name": "Total de software sem registro", "default_value": 0},
+    {"old_name": "total_cultivar_patents", "new_name": "Total de patentes cultivar", "default_value": 0},
+    {"old_name": "total_other_technical_production", "new_name": "Total de outra producao tecnica", "default_value": 0},
+    {"old_name": "total_guidance_postdoc", "new_name": "Total orientação pós-doutorado", "default_value": 0},
+    {"old_name": "total_phd_completed", "new_name": "Total doutorado concluído", "default_value": 0},
+    {"old_name": "total_phd_ongoing", "new_name": "Total doutorado em andamento", "default_value": 0},
+    {"old_name": "total_msc_completed", "new_name": "Total mestrado concluído", "default_value": 0},
+    {"old_name": "total_msc_ongoing", "new_name": "Total mestrado em andamento", "default_value": 0},
+    {"old_name": "coord_cientifico_tecnologico", "new_name": "Coordenação de projeto científico tecnológico", "default_value": 0},
+    {"old_name": "membro_cientifico_tecnologico", "new_name": "Membro de projeto científico tecnológico", "default_value": 0},
+    {"old_name": "coord_empresa", "new_name": "Coordenação de projeto com empresa", "default_value": 0},
+    {"old_name": "membro_empresa", "new_name": "Membro de projeto com empresa", "default_value": 0},
+    {"old_name": "coord_pesquisa", "new_name": "Coordenação de projeto de pesquisa", "default_value": 0},
+    {"old_name": "membro_pesquisa", "new_name": "Membro de projeto de pesquisa", "default_value": 0},
+    {"old_name": "licenciamento_qtd", "new_name": "Licenciamento", "default_value": 0},
+    {"old_name": "servicos_qtd", "new_name": "Servicos", "default_value": 0},
+    {"old_name": "empresas_qtd", "new_name": "Empresas", "default_value": 0},
+    {"old_name": "demanda_qtd", "new_name": "Demanda", "default_value": 0},
+    {"old_name": "licenciamento", "new_name": "Licenciamento - Descricao", "default_value": "Não encontrado"},
+    {"old_name": "servicos", "new_name": "Servicos - Descricao", "default_value": "Não encontrado"},
+    {"old_name": "empresas", "new_name": "Empresas - Descricao", "default_value": "Não encontrado"},
+    {"old_name": "demanda", "new_name": "Demanda - Descricao", "default_value": "Não encontrado"},
+    {"old_name": "publico_produto", "new_name": "Publico Produto", "default_value": "Não encontrado"},
+    {"old_name": "objetivos_metas_relevancia", "new_name": "Objetivos Metas Relevancia", "default_value": "Não encontrado"},
+    {"old_name": "metodologia_gestao", "new_name": "Metodologia Gestao", "default_value": "Não encontrado"},
+    {"old_name": "colaboracoes_financiamento", "new_name": "Colaboracoes Financiamento", "default_value": "Não encontrado"},
+    {"old_name": "potencial_inovacao_empreendedorismo", "new_name": "Potencial Inovacao Empreendedorismo", "default_value": "Não encontrado"},
+    {"old_name": "demandas_escalabilidade", "new_name": "Demandas Escalabilidade", "default_value": "Não encontrado"},
+    {"old_name": "maturidade_resultados", "new_name": "Maturidade Resultados", "default_value": "Não encontrado"},
+    {"old_name": "organizacao_parcerias_extensao", "new_name": "Organizacao Parcerias Extensao", "default_value": "Não encontrado"},
+    {"old_name": "perfil_tecnologico", "new_name": "Perfil Tecnologico", "default_value": "Não encontrado"},
+]
+# fmt: on
 
 
 def researcher_profile_csv(base_year=current_year):
@@ -78,6 +126,24 @@ def transfer_of_technology_csv():
 
     output_csv = "data/csv/transfer_of_technology.csv"
     output_xlsx = "data/csv/transfer_of_technology.xlsx"
+
+    os.makedirs(os.path.dirname(output_csv), exist_ok=True)
+
+    df_final.write_csv(output_csv)
+    df_final.write_excel(output_xlsx)
+
+
+def sumula_csv():
+    researchers = get_researchers()
+    foment_level = get_foment_level()
+
+    researchers = merge_data(researchers, foment_level)
+    researchers = add_evaluation_window(researchers)
+
+    df_final = analyze_sumula(researchers)
+
+    output_csv = "data/csv/sumula.csv"
+    output_xlsx = "data/csv/sumula.xlsx"
 
     os.makedirs(os.path.dirname(output_csv), exist_ok=True)
 
@@ -265,6 +331,7 @@ def merge_all_reports():
         "data/csv/project_analysis.csv",
         "data/csv/human_resources.csv",
         "data/csv/participation_in_project.csv",
+        "data/csv/sumula.csv",
     ]
 
     dfs = [pl.read_csv(f) for f in files_to_merge]
@@ -279,6 +346,26 @@ def merge_all_reports():
         df_to_join = df.drop(overlapping_cols)
         df_final = df_final.join(df_to_join, on="researcher_id", how="left")
 
+    for item in CONFIG:
+        col_name = item["old_name"]
+        default_val = item["default_value"]
+
+        if col_name not in df_final.columns:
+            df_final = df_final.with_columns(pl.lit(default_val).alias(col_name))
+        else:
+            df_final = df_final.with_columns(pl.col(col_name).fill_null(default_val))
+
+    selected_cols = [item["old_name"] for item in CONFIG]
+    df_final = df_final.select(selected_cols)
+
+    rename_mapping = {
+        item["old_name"]: item["new_name"]
+        for item in CONFIG
+        if item["old_name"] != item["new_name"]
+    }
+    if rename_mapping:
+        df_final = df_final.rename(rename_mapping)
+
     df_final.write_csv("data/csv/output/unified_report.csv")
     df_final.write_excel("data/csv/output/unified_report.xlsx")
 
@@ -292,6 +379,7 @@ def generate_final_report():
     project_analysis_csv()
     human_resources_csv()
     participation_in_project_csv()
+    sumula_csv()
 
     merge_all_reports()
 
