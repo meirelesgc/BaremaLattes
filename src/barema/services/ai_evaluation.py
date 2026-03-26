@@ -17,7 +17,7 @@ CACHE_DIR = "data/raw/cache"
 CSV_PATH = os.path.join(CACHE_DIR, "project_analysis_cache.csv")
 XLSX_PATH = os.path.join(CACHE_DIR, "project_analysis_cache.xlsx")
 
-llm = ChatOpenAI(api_key=SETTINGS.OPENAI_API_KEY, model="gpt-4o-mini", temperature=0)
+llm = ChatOpenAI(api_key=SETTINGS.OPENAI_API_KEY, model="gpt-5-nano", temperature=0)
 
 EXPECTED_KEYS = [
     "publico_produto",

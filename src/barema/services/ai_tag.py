@@ -15,9 +15,7 @@ XLSX_PATH = os.path.join(CACHE_DIR, "agencies_cache.xlsx")
 
 
 def evaluate_agency(agency_name: str) -> bool:
-    llm = ChatOpenAI(
-        api_key=SETTINGS.OPENAI_API_KEY, model="gpt-4o-mini", temperature=0
-    )
+    llm = ChatOpenAI(api_key=SETTINGS.OPENAI_API_KEY, model="gpt-5-nano", temperature=0)
 
     prompt = (
         "Estou classificando projetos acadêmicos segundo critérios de avaliação (barema). "

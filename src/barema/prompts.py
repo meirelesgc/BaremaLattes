@@ -56,7 +56,8 @@ PROMPTS_AVALIACAO = {
     """,
 }
 
-INSTRUCAO_ESTRUTURADA = """
+
+PROMPT_BAREMA_NOVO = """
 Você deve extrair informações do documento e retornar EXCLUSIVAMENTE um objeto JSON com as seguintes chaves:
 
 1. "sumula": Texto com até 5 realizações, formação, histórico profissional, financiamentos, indicadores e links de bases.
@@ -65,6 +66,10 @@ Você deve extrair informações do documento e retornar EXCLUSIVAMENTE um objet
 4. "extensao_inovadora_nota": Número inteiro correspondente à nota da ação de extensão.
 5. "extensao_inovadora_observacao": Justificativa textual da nota atribuída.
 6. "trajetoria_proponente": Número inteiro correspondente à nota de aderência.
+7. "trajetoria_proponente_observacao": Justificativa textual da nota atribuída.
+
+Seja rigido com os critérios.
+Para as justificativas, enumere separado por ponto e virgula (;) de forma coesa e desctiva, sem juizo de valor.
 
 Critérios para Transferência de Tecnologia (Impacto/Abrangência):
 - 10: Nacional e Estado
@@ -82,9 +87,4 @@ Critérios para Trajetória do Proponente em Tecnologias Sociais e Educacionais:
 - 10: Aderência com a área ALTA
 - 7: Aderência com a área MÉDIA
 - 4: Aderência com a área BAIXA
-"""
-
-PROMPT_BAREMA_NOVO = f"""
-Analise o currículo fornecido e preencha os campos conforme as instruções.
-{INSTRUCAO_ESTRUTURADA}
 """

@@ -1,13 +1,10 @@
+import json
 import os
-from typing import Optional
 
 import polars as pl
 from langchain_community.document_loaders import PyMuPDFLoader
-from langchain_core.output_parsers import PydanticOutputParser
-from langchain_core.prompts import PromptTemplate
+from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
-from pydantic import BaseModel
-from tqdm import tqdm
 
 from barema.core.settings import Settings
 
@@ -17,45 +14,47 @@ CACHE_DIR = "data/raw/cache"
 CSV_PATH = os.path.join(CACHE_DIR, "transfer_tech_cache.csv")
 XLSX_PATH = os.path.join(CACHE_DIR, "transfer_tech_cache.xlsx")
 
-llm = ChatOpenAI(api_key=SETTINGS.OPENAI_API_KEY, model="gpt-4o-mini", temperature=0)
+llm = ChatOpenAI(
+    api_key=SETTINGS.OPENAI_API_KEY,
+    model="gpt-5-mini",
+    temperature=0,
+    model_kwargs={"response_format": {"type": "json_object"}},
+)
+
+CRITERIOS = {
+    "licenciamento": "Licenciamento",
+    "servicos": "Serviços",
+    "empresas": "Empresas/Outros",
+    "demanda": "Demanda",
+}
 
 
-class ExtractionResult(BaseModel):
-    licenciamento_qtd: int
-    licenciamento: Optional[str]
-    servicos_qtd: int
-    servicos: Optional[str]
-    empresas_qtd: int
-    empresas: Optional[str]
-    demanda_qtd: int
-    demanda: Optional[str]
+def to_int(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return 0
 
 
-class AttachmentExtractionResult(BaseModel):
-    carta_apoio: bool
-    comentarios_anexos: Optional[str]
+def gerar_prompt(chaves, texto):
+    criterios_texto = "\n".join(
+        [f"{i + 1}) {CRITERIOS[k]}" for i, k in enumerate(chaves)]
+    )
+    chaves_json = ", ".join(
+        [f'"{k}_qtd" (int), "{k}" (string ou null)' for k in chaves]
+    )
 
-
-parser = PydanticOutputParser(pydantic_object=ExtractionResult)
-parser_attachment = PydanticOutputParser(pydantic_object=AttachmentExtractionResult)
-
-prompt_template = """
-Você receberá o texto extraído das seções 11 e 12 do currículo.
+    return f"""Você está recebendo o texto de um projeto elaborado por um pesquisador.
 
 Para cada critério abaixo:
 
-1) Licenciamento
-2) Serviços
-3) Empresas/Outros
-4) Demanda
+{criterios_texto}
 
 Faça:
 
 - Identifique evidências claras no texto.
 - Conte quantas evidências distintas existem.
-- Produza um pequeno texto em Markdown explicando o que foi identificado.
-- Inclua pelo menos uma citação literal curta retirada exatamente do texto.
-- A citação deve estar em bloco Markdown usando > 
+- Enumere separado por ponto e virgula (;) de forma coesa e descritiva.
 
 Se não houver evidência:
 - Retorne quantidade 0
@@ -63,12 +62,13 @@ Se não houver evidência:
 
 A quantidade deve refletir o número real de evidências distintas encontradas no texto.
 
-Responda SOMENTE com o JSON no formato do parser.
-{format_instructions}
+Responda SOMENTE com um objeto JSON válido contendo exatamente as seguintes chaves:
+{chaves_json}.
 
 Texto:
-{text}
+{texto}
 """
+
 
 prompt_template_attachment = """
 Você receberá o texto extraído dos anexos do formulário do projeto ou da súmula.
@@ -77,29 +77,12 @@ Faça:
 1. Verifique se existe menção ou transcrição de uma carta de apoio da instituição de ensino ou de pesquisa a qual o proponente pertence. Retorne um valor booleano.
 2. Gere um texto resumindo os comentários gerais e o conteúdo dos anexos do projeto.
 
-Responda SOMENTE com o JSON no formato do parser.
-{format_instructions}
+Responda SOMENTE com um objeto JSON válido contendo exatamente as seguintes chaves:
+"carta_apoio" (bool), "comentarios_anexos" (string ou null).
 
 Texto:
 {text}
 """
-
-prompt = PromptTemplate(
-    template=prompt_template,
-    input_variables=["text"],
-    partial_variables={"format_instructions": parser.get_format_instructions()},
-)
-
-prompt_attachment = PromptTemplate(
-    template=prompt_template_attachment,
-    input_variables=["text"],
-    partial_variables={
-        "format_instructions": parser_attachment.get_format_instructions()
-    },
-)
-
-chain = prompt | llm | parser
-chain_attachment = prompt_attachment | llm | parser_attachment
 
 
 def _load_text_from_pdf(file_path: str) -> str:
@@ -107,53 +90,6 @@ def _load_text_from_pdf(file_path: str) -> str:
     documents = loader.load()
     texts = [d.page_content for d in documents]
     return "\n".join(texts)
-
-
-def extract_data(lattes_id: str) -> dict:
-    file_path = f"data/raw/projects/{lattes_id}.pdf"
-    attachment_path = f"data/raw/projects/attachment/{lattes_id}.pdf"
-
-    result = {
-        "lattes_id": lattes_id,
-        "licenciamento_qtd": 0,
-        "licenciamento": None,
-        "servicos_qtd": 0,
-        "servicos": None,
-        "empresas_qtd": 0,
-        "empresas": None,
-        "demanda_qtd": 0,
-        "demanda": None,
-        "carta_apoio": False,
-        "comentarios_anexos": None,
-    }
-
-    if os.path.exists(file_path):
-        text = _load_text_from_pdf(file_path)
-        parsed = chain.invoke({"text": text})
-        result.update(
-            {
-                "licenciamento_qtd": parsed.licenciamento_qtd,
-                "licenciamento": parsed.licenciamento,
-                "servicos_qtd": parsed.servicos_qtd,
-                "servicos": parsed.servicos,
-                "empresas_qtd": parsed.empresas_qtd,
-                "empresas": parsed.empresas,
-                "demanda_qtd": parsed.demanda_qtd,
-                "demanda": parsed.demanda,
-            }
-        )
-
-    if os.path.exists(attachment_path):
-        text_attachment = _load_text_from_pdf(attachment_path)
-        parsed_attachment = chain_attachment.invoke({"text": text_attachment})
-        result.update(
-            {
-                "carta_apoio": parsed_attachment.carta_apoio,
-                "comentarios_anexos": parsed_attachment.comentarios_anexos,
-            }
-        )
-
-    return result
 
 
 def load_cache() -> pl.DataFrame:
@@ -191,10 +127,97 @@ def get_transfer_of_technology(df_researchers: pl.DataFrame) -> pl.DataFrame:
     all_ids = df_researchers["lattes_id"].to_list()
 
     new_ids = [lid for lid in all_ids if lid not in cached_ids]
-    results = []
 
-    for lattes_id in tqdm(new_ids, desc="Extraindo Transferência de Tecnologia"):
-        result = extract_data(lattes_id)
+    if not new_ids:
+        return df_researchers.join(cache, on="lattes_id", how="left")
+
+    inputs_gerais = []
+    lattes_validos = []
+    textos_cache = {}
+
+    for lattes_id in new_ids:
+        file_path = f"data/raw/projects/{lattes_id}.pdf"
+        if os.path.exists(file_path):
+            text = _load_text_from_pdf(file_path)
+            textos_cache[lattes_id] = text
+            prompt = gerar_prompt(list(CRITERIOS.keys()), text)
+            inputs_gerais.append([HumanMessage(content=prompt)])
+            lattes_validos.append(lattes_id)
+
+    resultados_iniciais = {}
+    if inputs_gerais:
+        respostas_gerais = llm.batch(inputs_gerais)
+        for lattes_id, resposta in zip(lattes_validos, respostas_gerais):
+            try:
+                dados = json.loads(resposta.content)
+                for chave in CRITERIOS.keys():
+                    dados[f"{chave}_qtd"] = to_int(dados.get(f"{chave}_qtd"))
+                resultados_iniciais[lattes_id] = dados
+            except Exception:
+                resultados_iniciais[lattes_id] = {}
+
+    inputs_fallback = []
+    fallback_map = []
+
+    for lattes_id in lattes_validos:
+        dados = resultados_iniciais.get(lattes_id, {})
+        text = textos_cache[lattes_id]
+        for chave in CRITERIOS.keys():
+            if to_int(dados.get(f"{chave}_qtd")) == 0:
+                prompt = gerar_prompt([chave], text)
+                inputs_fallback.append([HumanMessage(content=prompt)])
+                fallback_map.append((lattes_id, chave))
+
+    if inputs_fallback:
+        respostas_fallback = llm.batch(inputs_fallback)
+        for (lattes_id, chave), resposta in zip(fallback_map, respostas_fallback):
+            try:
+                dados_fb = json.loads(resposta.content)
+                qtd_fb = to_int(dados_fb.get(f"{chave}_qtd"))
+                if qtd_fb > 0:
+                    resultados_iniciais[lattes_id][f"{chave}_qtd"] = qtd_fb
+                    resultados_iniciais[lattes_id][chave] = dados_fb.get(chave)
+            except Exception:
+                pass
+
+    inputs_anexos = []
+    lattes_anexos = []
+
+    for lattes_id in new_ids:
+        attachment_path = f"data/raw/projects/attachment/{lattes_id}.pdf"
+        if os.path.exists(attachment_path):
+            text = _load_text_from_pdf(attachment_path)
+            prompt = prompt_template_attachment.format(text=text)
+            inputs_anexos.append([HumanMessage(content=prompt)])
+            lattes_anexos.append(lattes_id)
+
+    resultados_anexos = {}
+    if inputs_anexos:
+        respostas_anexos = llm.batch(inputs_anexos)
+        for lattes_id, resposta in zip(lattes_anexos, respostas_anexos):
+            try:
+                resultados_anexos[lattes_id] = json.loads(resposta.content)
+            except Exception:
+                resultados_anexos[lattes_id] = {}
+
+    results = []
+    for lattes_id in new_ids:
+        dados_gerais = resultados_iniciais.get(lattes_id, {})
+        dados_anexos = resultados_anexos.get(lattes_id, {})
+
+        result = {
+            "lattes_id": lattes_id,
+            "licenciamento_qtd": to_int(dados_gerais.get("licenciamento_qtd")),
+            "licenciamento": dados_gerais.get("licenciamento"),
+            "servicos_qtd": to_int(dados_gerais.get("servicos_qtd")),
+            "servicos": dados_gerais.get("servicos"),
+            "empresas_qtd": to_int(dados_gerais.get("empresas_qtd")),
+            "empresas": dados_gerais.get("empresas"),
+            "demanda_qtd": to_int(dados_gerais.get("demanda_qtd")),
+            "demanda": dados_gerais.get("demanda"),
+            "carta_apoio": dados_anexos.get("carta_apoio", False),
+            "comentarios_anexos": dados_anexos.get("comentarios_anexos"),
+        }
         results.append(result)
 
     if results:
